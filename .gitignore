@@ -1,0 +1,21 @@
+
+# private configuration
+local.properties
+
+# Java class files
+*.class
+
+# generated files
+bin/
+gen/
+target/
+
+# Package Files
+*.jar
+*.war
+*.ear
+
+# eclipse files
+.settings/
+.classpath
+.project
