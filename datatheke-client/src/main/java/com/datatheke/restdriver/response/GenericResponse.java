@@ -68,7 +68,7 @@ public class GenericResponse {
 
 	@Override
 	public String toString() {
-		return "GenericResponse [values=" + values + "]";
+		return "GenericResponse [" + values + "]";
 	}
 
 	@Override

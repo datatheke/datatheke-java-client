@@ -24,9 +24,16 @@ import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 public class DatathekeRestDriver {
 	private final WebResource resource;
 	private AuthenticateToken token;
+	private boolean debug;
+
+	public DatathekeRestDriver() {
+		resource = Client.create().resource("http://www.datatheke.com/api/v1");
+		debug = false;
+	}
 
 	public DatathekeRestDriver(String baseUri) {
 		resource = Client.create().resource(baseUri);
+		debug = false;
 	}
 
 	public Boolean isConnected() {
@@ -38,7 +45,9 @@ public class DatathekeRestDriver {
 		WebResource endpoint = resource.path("token");
 		Builder builder = endpoint.accept(MediaType.APPLICATION_JSON_TYPE);
 		ClientResponse response = builder.post(ClientResponse.class);
-		System.out.println(response);
+		if (debug) {
+			System.out.println(response);
+		}
 		String entity = response.getEntity(String.class);
 		if (response.getStatus() == 200) {
 			try {
@@ -65,6 +74,10 @@ public class DatathekeRestDriver {
 		return getLibrairies(null);
 	}
 
+	public void setDebug(boolean debug) {
+		this.debug = debug;
+	}
+
 	private GenericResponse query(String path, Map<String, String> parameters) {
 		if (token != null) {
 			WebResource endpoint = resource.path(path);
@@ -77,7 +90,9 @@ public class DatathekeRestDriver {
 			}
 			Builder builder = endpoint.accept(MediaType.APPLICATION_JSON_TYPE);
 			ClientResponse response = builder.header("Authorization", "Bearer " + token.getToken()).get(ClientResponse.class);
-			System.out.println(response);
+			if (debug) {
+				System.out.println(response);
+			}
 			try {
 				return new GenericResponse(response);
 			} catch (JsonParseException e) {
