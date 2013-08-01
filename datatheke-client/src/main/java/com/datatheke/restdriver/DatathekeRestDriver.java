@@ -64,21 +64,109 @@ public class DatathekeRestDriver {
 		return this;
 	}
 
+	/**
+	 * GET librairies?page={page}
+	 * 
+	 * @param page
+	 * @return
+	 */
 	public GenericResponse getLibrairies(Integer page) {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("page", page != null ? page.toString() : null);
-		return query("libraries", parameters);
+		return query("GET", "libraries", parameters, null);
 	}
 
+	/**
+	 * GET librairies
+	 * 
+	 * @return
+	 */
 	public GenericResponse getLibrairies() {
 		return getLibrairies(null);
+	}
+
+	/**
+	 * GET library/{id}
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public GenericResponse getLibrary(String id) {
+		return query("GET", "library/" + id, null, null);
+	}
+
+	/**
+	 * GET library/{id}/collections?page={page}
+	 * 
+	 * @param id
+	 * @param page
+	 * @return
+	 */
+	public GenericResponse getLibraryCollections(String id, Integer page) {
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("page", page != null ? page.toString() : null);
+		return query("GET", "library/" + id + "/collections", parameters, null);
+	}
+
+	/**
+	 * GET library/{id}/collections
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public GenericResponse getLibraryCollections(String id) {
+		return getLibraryCollections(id, null);
+	}
+
+	/**
+	 * GET collection/{id}
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public GenericResponse getCollection(String id) {
+		return query("GET", "collection/" + id, null, null);
+	}
+
+	/**
+	 * GET collection/{id}/items?page={page}
+	 * 
+	 * @param id
+	 * @param page
+	 * @return
+	 */
+	public GenericResponse getCollectionItems(String id, Integer page) {
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("page", page != null ? page.toString() : null);
+		return query("GET", "collection/" + id + "/items", parameters, null);
+	}
+
+	/**
+	 * GET collection/{id}/items
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public GenericResponse getCollectionItems(String id) {
+		return getCollectionItems(id, null);
+	}
+
+	/**
+	 * GET collection/{collectionId}/item/{id}
+	 * 
+	 * @param collectionId
+	 * @param id
+	 * @return
+	 */
+	public GenericResponse getItem(String collectionId, String id) {
+		return query("GET", "collection/" + collectionId + "/item/" + id, null, null);
 	}
 
 	public void setDebug(boolean debug) {
 		this.debug = debug;
 	}
 
-	private GenericResponse query(String path, Map<String, String> parameters) {
+	private GenericResponse query(String httpVerb, String path, Map<String, String> parameters, String requestBody) {
 		if (token != null) {
 			WebResource endpoint = resource.path(path);
 			if (parameters != null) {
@@ -89,7 +177,18 @@ public class DatathekeRestDriver {
 				}
 			}
 			Builder builder = endpoint.accept(MediaType.APPLICATION_JSON_TYPE);
-			ClientResponse response = builder.header("Authorization", "Bearer " + token.getToken()).get(ClientResponse.class);
+			ClientResponse response = null;
+			if ("GET".equals(httpVerb)) {
+				response = builder.header("Authorization", "Bearer " + token.getToken()).get(ClientResponse.class);
+			} else if ("POST".equals(httpVerb)) {
+				response = builder.header("Authorization", "Bearer " + token.getToken()).post(ClientResponse.class, requestBody);
+			} else if ("PUT".equals(httpVerb)) {
+				response = builder.header("Authorization", "Bearer " + token.getToken()).put(ClientResponse.class, requestBody);
+			} else if ("DELETE".equals(httpVerb)) {
+				response = builder.header("Authorization", "Bearer " + token.getToken()).delete(ClientResponse.class, requestBody);
+			} else {
+				throw new IllegalArgumentException("Unknown httpVerb <" + httpVerb + "> !!!");
+			}
 			if (debug) {
 				System.out.println(response);
 			}
