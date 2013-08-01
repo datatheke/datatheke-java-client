@@ -11,6 +11,9 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import com.datatheke.restdriver.beans.Collection;
+import com.datatheke.restdriver.beans.Item;
+import com.datatheke.restdriver.beans.Library;
 import com.datatheke.restdriver.response.AuthenticateToken;
 import com.datatheke.restdriver.response.GenericResponse;
 import com.sun.jersey.api.client.Client;
@@ -160,6 +163,117 @@ public class DatathekeRestDriver {
 	 */
 	public GenericResponse getItem(String collectionId, String id) {
 		return query("GET", "collection/" + collectionId + "/item/" + id, null, null);
+	}
+
+	/**
+	 * POST library
+	 * 
+	 * @param library
+	 * @return
+	 */
+	public GenericResponse createLibrary(Library library) {
+		// TODO
+		return null;
+	}
+
+	/**
+	 * POST library/{id}
+	 * 
+	 * @param libraryId
+	 * @param collection
+	 * @return
+	 */
+	public GenericResponse createCollection(String libraryId, Collection collection) {
+		// TODO
+		return null;
+	}
+
+	/**
+	 * POST collection/{id}
+	 * 
+	 * @param collectionId
+	 * @param item
+	 * @return
+	 */
+	public GenericResponse createItem(String collectionId, Item item) {
+		// TODO
+		return null;
+	}
+
+	/**
+	 * PUT library/{id}
+	 * 
+	 * @param library
+	 * @return
+	 */
+	public GenericResponse updateLibrary(Library library) {
+		if (library == null || library.getId() == null || library.getId().length() == 0) {
+			throw new IllegalArgumentException("Library can't be null and must have a non-empty id : " + library);
+		}
+		// TODO
+		return null;
+	}
+
+	/**
+	 * PUT collection/{id}
+	 * 
+	 * @param collection
+	 * @return
+	 */
+	public GenericResponse updateCollection(Collection collection) {
+		if (collection == null || collection.getId() == null || collection.getId().length() == 0) {
+			throw new IllegalArgumentException("Collection can't be null and must have a non-empty id : " + collection);
+		}
+		// TODO
+		return null;
+	}
+
+	/**
+	 * PUT collection/{collectionId}/item/{id}
+	 * 
+	 * @param item
+	 * @return
+	 */
+	public GenericResponse updateItem(Item item) {
+		if (item == null || item.getId() == null || item.getId().length() == 0) {
+			throw new IllegalArgumentException("Item can't be null and must have a non-empty id : " + item);
+		}
+		// TODO
+		return null;
+	}
+
+	/**
+	 * DELETE library/{id}
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public GenericResponse deleteLibrary(String id) {
+		// TODO
+		return null;
+	}
+
+	/**
+	 * DELETE collection/{id}
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public GenericResponse deleteCollection(String id) {
+		// TODO
+		return null;
+	}
+
+	/**
+	 * DELETE collection/{collectionId}/item/{id}
+	 * 
+	 * @param collectionId
+	 * @param id
+	 * @return
+	 */
+	public GenericResponse deleteItem(String collectionId, String id) {
+		// TODO
+		return null;
 	}
 
 	public void setDebug(boolean debug) {
