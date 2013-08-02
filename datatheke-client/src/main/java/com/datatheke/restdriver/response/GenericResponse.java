@@ -13,6 +13,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
 import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.UniformInterfaceException;
 
 public class GenericResponse {
 	private ClientResponse response;
@@ -24,10 +25,19 @@ public class GenericResponse {
 
 	public GenericResponse(ClientResponse response) throws JsonParseException, JsonMappingException, IOException {
 		this.response = response;
-		String entity = response.getEntity(String.class);
-		ObjectMapper mapper = new ObjectMapper();
-		this.values = mapper.readValue(entity, new TypeReference<Map<String, Object>>() {
-		});
+		try {
+			if (response != null && response.hasEntity()) {
+				String entity = response.getEntity(String.class);
+				ObjectMapper mapper = new ObjectMapper();
+				this.values = mapper.readValue(entity, new TypeReference<Map<String, Object>>() {
+				});
+			}
+		} catch (UniformInterfaceException e) {
+			// TODO how to avoid exception ?
+		}
+		if (this.values == null) {
+			this.values = new HashMap<String, Object>();
+		}
 	}
 
 	public ClientResponse getResponse() {

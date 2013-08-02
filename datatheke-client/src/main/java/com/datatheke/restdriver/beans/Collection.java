@@ -1,5 +1,6 @@
 package com.datatheke.restdriver.beans;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Collection {
@@ -48,6 +49,24 @@ public class Collection {
 
 	public void setFields(List<CollectionField> fields) {
 		this.fields = fields;
+	}
+
+	public void addField(CollectionField field) {
+		if (fields == null) {
+			fields = new ArrayList<CollectionField>();
+		}
+		fields.add(field);
+	}
+
+	public CollectionField getField(String label) {
+		if (fields != null) {
+			for (CollectionField field : fields) {
+				if (field != null && field.getLabel() != null && field.getLabel().equals(label)) {
+					return field;
+				}
+			}
+		}
+		return null;
 	}
 
 	@Override

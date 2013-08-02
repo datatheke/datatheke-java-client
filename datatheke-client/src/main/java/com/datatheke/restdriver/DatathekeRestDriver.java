@@ -1,7 +1,9 @@
 package com.datatheke.restdriver;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -10,8 +12,10 @@ import javax.ws.rs.core.MediaType;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.datatheke.restdriver.beans.Collection;
+import com.datatheke.restdriver.beans.CollectionField;
 import com.datatheke.restdriver.beans.Item;
 import com.datatheke.restdriver.beans.Library;
 import com.datatheke.restdriver.response.AuthenticateToken;
@@ -25,6 +29,7 @@ import com.sun.jersey.api.client.WebResource.Builder;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
 public class DatathekeRestDriver {
+	private static final ObjectMapper jsonMapper = new ObjectMapper().setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
 	private final WebResource resource;
 	private AuthenticateToken token;
 	private boolean debug;
@@ -73,7 +78,7 @@ public class DatathekeRestDriver {
 	 * @param page
 	 * @return
 	 */
-	public GenericResponse getLibrairies(Integer page) {
+	public GenericResponse getLibraries(Integer page) {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("page", page != null ? page.toString() : null);
 		return query("GET", "libraries", parameters, null);
@@ -84,8 +89,8 @@ public class DatathekeRestDriver {
 	 * 
 	 * @return
 	 */
-	public GenericResponse getLibrairies() {
-		return getLibrairies(null);
+	public GenericResponse getLibraries() {
+		return getLibraries(null);
 	}
 
 	/**
@@ -166,26 +171,54 @@ public class DatathekeRestDriver {
 	}
 
 	/**
-	 * POST library
+	 * call url POST library<br/>
+	 * get response: {"id":"51fb76d6138a76d45500035f"}
 	 * 
 	 * @param library
 	 * @return
 	 */
 	public GenericResponse createLibrary(Library library) {
-		// TODO
-		return null;
+		if (library == null) {
+			throw new IllegalArgumentException("Library can't be null !!!");
+		}
+		if (library.getId() != null) {
+			throw new IllegalArgumentException("Can't create a Library with an id !!!");
+		}
+		String requestBody = null;
+		try {
+			Map<String, Library> map = new HashMap<String, Library>();
+			map.put("library", library);
+			requestBody = jsonMapper.writeValueAsString(map);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return query("POST", "library", null, requestBody);
 	}
 
 	/**
-	 * POST library/{id}
+	 * POST library/{id}<br/>
+	 * get response: {"id":"51fb7aa5138a76255b000165"}
 	 * 
 	 * @param libraryId
 	 * @param collection
 	 * @return
 	 */
 	public GenericResponse createCollection(String libraryId, Collection collection) {
-		// TODO
-		return null;
+		if (collection == null) {
+			throw new IllegalArgumentException("Collection can't be null !!!");
+		}
+		if (collection.getId() != null) {
+			throw new IllegalArgumentException("Can't create a Collection with an id !!!");
+		}
+		String requestBody = null;
+		try {
+			Map<String, Collection> map = new HashMap<String, Collection>();
+			map.put("collection", collection);
+			requestBody = jsonMapper.writeValueAsString(map);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return query("POST", "library/" + libraryId, null, requestBody);
 	}
 
 	/**
@@ -210,8 +243,15 @@ public class DatathekeRestDriver {
 		if (library == null || library.getId() == null || library.getId().length() == 0) {
 			throw new IllegalArgumentException("Library can't be null and must have a non-empty id : " + library);
 		}
-		// TODO
-		return null;
+		String requestBody = null;
+		try {
+			Map<String, Library> map = new HashMap<String, Library>();
+			map.put("library", new Library(null, library.getName(), library.getDescription()));
+			requestBody = jsonMapper.writeValueAsString(map);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return query("PUT", "library/" + library.getId(), null, requestBody);
 	}
 
 	/**
@@ -221,11 +261,27 @@ public class DatathekeRestDriver {
 	 * @return
 	 */
 	public GenericResponse updateCollection(Collection collection) {
+		// FIXME not working...
 		if (collection == null || collection.getId() == null || collection.getId().length() == 0) {
 			throw new IllegalArgumentException("Collection can't be null and must have a non-empty id : " + collection);
 		}
-		// TODO
-		return null;
+		String requestBody = null;
+		try {
+			Map<String, Collection> map = new HashMap<String, Collection>();
+			List<CollectionField> fields = null;
+			if (collection.getFields() != null) {
+				fields = new ArrayList<CollectionField>();
+				for (CollectionField field : collection.getFields()) {
+					fields.add(new CollectionField(field.getLabel(), null));
+				}
+			}
+			map.put("collection", new Collection(null, collection.getName(), collection.getDescription(), fields));
+			requestBody = jsonMapper.writeValueAsString(map);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("requestBody: " + requestBody);
+		return query("PUT", "collection/" + collection.getId(), null, requestBody);
 	}
 
 	/**
@@ -249,8 +305,7 @@ public class DatathekeRestDriver {
 	 * @return
 	 */
 	public GenericResponse deleteLibrary(String id) {
-		// TODO
-		return null;
+		return query("DELETE", "library/" + id, null, null);
 	}
 
 	/**
@@ -260,8 +315,7 @@ public class DatathekeRestDriver {
 	 * @return
 	 */
 	public GenericResponse deleteCollection(String id) {
-		// TODO
-		return null;
+		return query("DELETE", "collection/" + id, null, null);
 	}
 
 	/**
@@ -295,9 +349,11 @@ public class DatathekeRestDriver {
 			if ("GET".equals(httpVerb)) {
 				response = builder.header("Authorization", "Bearer " + token.getToken()).get(ClientResponse.class);
 			} else if ("POST".equals(httpVerb)) {
-				response = builder.header("Authorization", "Bearer " + token.getToken()).post(ClientResponse.class, requestBody);
+				response = builder.header("Authorization", "Bearer " + token.getToken()).header("Content-type", "application/json")
+						.post(ClientResponse.class, requestBody);
 			} else if ("PUT".equals(httpVerb)) {
-				response = builder.header("Authorization", "Bearer " + token.getToken()).put(ClientResponse.class, requestBody);
+				response = builder.header("Authorization", "Bearer " + token.getToken()).header("Content-type", "application/json")
+						.put(ClientResponse.class, requestBody);
 			} else if ("DELETE".equals(httpVerb)) {
 				response = builder.header("Authorization", "Bearer " + token.getToken()).delete(ClientResponse.class, requestBody);
 			} else {
