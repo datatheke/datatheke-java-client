@@ -172,7 +172,7 @@ public class DatathekeRestDriver {
 	 * @param page
 	 * @return
 	 */
-	public CollectionsResponse getLibraryCollections(String id, Integer page) {
+	public CollectionsResponse getCollectionsForLibrary(String id, Integer page) {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("page", page != null ? page.toString() : null);
 		return new CollectionsResponse(query("GET", "library/" + id + "/collections", parameters, null));
@@ -185,7 +185,7 @@ public class DatathekeRestDriver {
 	 * @return
 	 */
 	public CollectionsResponse getCollectionsForLibrary(String id) {
-		return getLibraryCollections(id, null);
+		return getCollectionsForLibrary(id, null);
 	}
 
 	/**
