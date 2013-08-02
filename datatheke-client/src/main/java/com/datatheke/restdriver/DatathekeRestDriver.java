@@ -15,7 +15,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.datatheke.restdriver.beans.Collection;
-import com.datatheke.restdriver.beans.CollectionField;
+import com.datatheke.restdriver.beans.Field;
 import com.datatheke.restdriver.beans.Item;
 import com.datatheke.restdriver.beans.Library;
 import com.datatheke.restdriver.response.AuthenticateToken;
@@ -238,11 +238,11 @@ public class DatathekeRestDriver {
 		String requestBody = null;
 		try {
 			Map<String, Collection> map = new HashMap<String, Collection>();
-			List<CollectionField> fields = null;
+			List<Field> fields = null;
 			if (collection.getFields() != null) {
-				fields = new ArrayList<CollectionField>();
-				for (CollectionField field : collection.getFields()) {
-					fields.add(new CollectionField(null, field.getLabel(), field.getType()));
+				fields = new ArrayList<Field>();
+				for (Field field : collection.getFields()) {
+					fields.add(new Field(null, field.getLabel(), field.getType()));
 				}
 			}
 			map.put("collection", new Collection(null, collection.getName(), collection.getDescription(), fields));
@@ -306,8 +306,26 @@ public class DatathekeRestDriver {
 	 * @return
 	 */
 	public IdResponse createItem(String collectionId, Item item) {
-		// TODO
-		return null;
+		if (item == null) {
+			throw new IllegalArgumentException("Item can't be null !!!");
+		}
+		if (item.getId() != null) {
+			throw new IllegalArgumentException("Can't create a Item with an id !!!");
+		}
+		String requestBody = null;
+		try {
+			Map<String, Object> fieldMap = new HashMap<String, Object>();
+			for (Entry<Field, Object> entry : item.getValues().entrySet()) {
+				fieldMap.put("_" + entry.getKey().getId(), entry.getValue());
+			}
+
+			Map<String, Map<String, Object>> map = new HashMap<String, Map<String, Object>>();
+			map.put("_" + collectionId, fieldMap);
+			requestBody = jsonMapper.writeValueAsString(map);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return new IdResponse(query("POST", "collection/" + collectionId, null, requestBody));
 	}
 
 	/**
@@ -316,12 +334,25 @@ public class DatathekeRestDriver {
 	 * @param item
 	 * @return
 	 */
-	public EmptyResponse updateItem(Item item) {
+	public EmptyResponse updateItem(String collectionId, Item item) {
 		if (item == null || item.getId() == null || item.getId().length() == 0) {
 			throw new IllegalArgumentException("Item can't be null and must have a non-empty id : " + item);
 		}
-		// TODO
-		return null;
+		String requestBody = null;
+		try {
+			Map<String, Object> fieldMap = new HashMap<String, Object>();
+			for (Entry<Field, Object> entry : item.getValues().entrySet()) {
+				fieldMap.put("_" + entry.getKey().getId(), entry.getValue());
+			}
+
+			Map<String, Map<String, Object>> map = new HashMap<String, Map<String, Object>>();
+			map.put("_" + collectionId, fieldMap);
+			requestBody = jsonMapper.writeValueAsString(map);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println(requestBody);
+		return new EmptyResponse(query("PUT", "collection/" + collectionId + "/item/" + item.getId(), null, requestBody));
 	}
 
 	/**
@@ -332,8 +363,8 @@ public class DatathekeRestDriver {
 	 * @return
 	 */
 	public EmptyResponse deleteItem(String collectionId, String id) {
-		// TODO
-		return null;
+		// FIXME get an internal serveur error (500) !
+		return new EmptyResponse(query("DELETE", "collection/" + collectionId + "/item/" + id, null, null));
 	}
 
 	public void setDebug(boolean debug) {

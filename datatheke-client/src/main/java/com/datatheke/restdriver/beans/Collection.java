@@ -8,7 +8,7 @@ public class Collection {
 	private String id;
 	private String name;
 	private String description;
-	private List<CollectionField> fields;
+	private List<Field> fields;
 
 	// Boolean private
 	// Boolean deleted
@@ -19,7 +19,7 @@ public class Collection {
 	public Collection() {
 	}
 
-	public Collection(String id, String name, String description, List<CollectionField> fields) {
+	public Collection(String id, String name, String description, List<Field> fields) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -30,12 +30,12 @@ public class Collection {
 		this.id = (String) map.get("id");
 		this.name = (String) map.get("name");
 		this.description = (String) map.get("description");
-		this.fields = new ArrayList<CollectionField>();
+		this.fields = new ArrayList<Field>();
 		@SuppressWarnings("unchecked")
 		List<Map<String, Object>> fieldList = (List<Map<String, Object>>) map.get("fields");
 		if (fieldList != null) {
 			for (Map<String, Object> field : fieldList) {
-				this.fields.add(new CollectionField(field));
+				this.fields.add(new Field(field));
 			}
 		}
 	}
@@ -64,30 +64,37 @@ public class Collection {
 		this.description = description;
 	}
 
-	public List<CollectionField> getFields() {
+	public List<Field> getFields() {
 		return fields;
 	}
 
-	public void setFields(List<CollectionField> fields) {
+	public void setFields(List<Field> fields) {
 		this.fields = fields;
 	}
 
-	public void addField(CollectionField field) {
-		if (fields == null) {
-			fields = new ArrayList<CollectionField>();
-		}
-		fields.add(field);
-	}
-
-	public CollectionField getField(String label) {
+	public Field getField(String label) {
 		if (fields != null) {
-			for (CollectionField field : fields) {
+			for (Field field : fields) {
 				if (field != null && field.getLabel() != null && field.getLabel().equals(label)) {
 					return field;
 				}
 			}
 		}
 		return null;
+	}
+
+	public void addField(Field field) {
+		if (fields == null) {
+			fields = new ArrayList<Field>();
+		}
+		fields.add(field);
+	}
+
+	public void removeField(Field field) {
+		if (fields == null) {
+			fields = new ArrayList<Field>();
+		}
+		fields.remove(field);
 	}
 
 	@Override

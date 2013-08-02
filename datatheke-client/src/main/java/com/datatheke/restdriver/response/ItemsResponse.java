@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.datatheke.restdriver.beans.CollectionField;
+import com.datatheke.restdriver.beans.Field;
 import com.datatheke.restdriver.beans.Item;
 import com.sun.jersey.api.client.ClientResponse;
 
 public class ItemsResponse extends ListResponse<Item> {
-	private List<CollectionField> fields;
+	private List<Field> fields;
 
-	public ItemsResponse(ClientResponse response, List<CollectionField> fields) {
+	public ItemsResponse(ClientResponse response, List<Field> fields) {
 		super(response);
 		this.fields = fields;
 	}

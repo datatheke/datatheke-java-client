@@ -2,26 +2,26 @@ package com.datatheke.restdriver.beans;
 
 import java.util.Map;
 
-public class CollectionField {
+public class Field {
 	private String id;
 	private String label;
-	private CollectionFieldType type;
+	private FieldType type;
 
 	// Boolean multiple
 
-	public CollectionField() {
+	public Field() {
 	}
 
-	public CollectionField(String id, String label, CollectionFieldType type) {
+	public Field(String id, String label, FieldType type) {
 		this.id = id;
 		this.label = label;
 		this.type = type;
 	}
 
-	public CollectionField(Map<String, Object> map) {
+	public Field(Map<String, Object> map) {
 		this.id = (String) map.get("id");
 		this.label = (String) map.get("label");
-		this.type = CollectionFieldType.get((String) map.get("type"));
+		this.type = FieldType.get((String) map.get("type"));
 	}
 
 	public String getId() {
@@ -40,11 +40,11 @@ public class CollectionField {
 		this.label = label;
 	}
 
-	public CollectionFieldType getType() {
+	public FieldType getType() {
 		return type;
 	}
 
-	public void setType(CollectionFieldType type) {
+	public void setType(FieldType type) {
 		this.type = type;
 	}
 
@@ -71,7 +71,7 @@ public class CollectionField {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		CollectionField other = (CollectionField) obj;
+		Field other = (Field) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

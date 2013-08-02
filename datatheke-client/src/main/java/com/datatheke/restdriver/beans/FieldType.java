@@ -1,11 +1,11 @@
 package com.datatheke.restdriver.beans;
 
-public enum CollectionFieldType {
+public enum FieldType {
 	string, textarea, date, coordinates;
 
-	public static CollectionFieldType get(String name) {
+	public static FieldType get(String name) {
 		if (name != null) {
-			for (CollectionFieldType type : CollectionFieldType.values()) {
+			for (FieldType type : FieldType.values()) {
 				if (name.equals(type.toString())) {
 					return type;
 				}

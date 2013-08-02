@@ -7,13 +7,18 @@ import java.util.Map.Entry;
 
 public class Item {
 	private String id;
-	private Map<CollectionField, Object> values;
+	private Map<Field, Object> values;
 
-	public Item(List<CollectionField> fields, Map<String, Object> map) {
+	public Item(String id, Map<Field, Object> values) {
+		this.id = id;
+		this.values = values;
+	}
+
+	public Item(List<Field> fields, Map<String, Object> map) {
 		this.id = (String) map.get("id");
-		this.values = new HashMap<CollectionField, Object>();
+		this.values = new HashMap<Field, Object>();
 		if (fields != null) {
-			for (CollectionField field : fields) {
+			for (Field field : fields) {
 				this.values.put(field, map.get("_" + field.getId()));
 			}
 		}
@@ -27,17 +32,28 @@ public class Item {
 		this.id = id;
 	}
 
-	public Map<CollectionField, Object> getValues() {
+	public Map<Field, Object> getValues() {
 		return values;
 	}
 
-	public void setValues(Map<CollectionField, Object> values) {
+	public void setValues(Map<Field, Object> values) {
 		this.values = values;
 	}
 
-	public Object getField(String label) {
+	public Field getField(String label) {
 		if (values != null) {
-			for (Entry<CollectionField, Object> entry : values.entrySet()) {
+			for (Entry<Field, Object> entry : values.entrySet()) {
+				if (entry.getKey().getLabel().equals(label)) {
+					return entry.getKey();
+				}
+			}
+		}
+		return null;
+	}
+
+	public Object getFieldValue(String label) {
+		if (values != null) {
+			for (Entry<Field, Object> entry : values.entrySet()) {
 				if (entry.getKey().getLabel().equals(label)) {
 					return entry.getValue();
 				}
@@ -46,15 +62,24 @@ public class Item {
 		return null;
 	}
 
-	public Object getField(CollectionFieldType type, String label) {
+	public Object getFieldValue(Field field) {
 		if (values != null) {
-			for (Entry<CollectionField, Object> entry : values.entrySet()) {
-				if (entry.getKey().getType().equals(type) && entry.getKey().getLabel().equals(label)) {
-					return entry.getValue();
-				}
-			}
+			return values.get(field);
 		}
 		return null;
+	}
+
+	public void setFieldValue(Field field, Object value) {
+		if (values != null) {
+			values.put(field, value);
+		}
+	}
+
+	public void addField(Field field, Object value) {
+		if (values == null) {
+			values = new HashMap<Field, Object>();
+		}
+		values.put(field, value);
 	}
 
 	@Override
