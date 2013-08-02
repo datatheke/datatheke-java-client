@@ -71,7 +71,7 @@ public class DatathekeUtils {
 
 	public static String createCollection(DatathekeRestDriver driver, String libraryId, Object obj) {
 		Collection collection = DatathekeUtils.generateCollectionFor(obj.getClass());
-		collection.setDescription("Automaticly generated collection");
+		collection.setDescription("Automatically generated collection");
 		IdResponse createCollection = driver.createCollection(libraryId, collection);
 		return createCollection.getId();
 	}
