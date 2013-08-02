@@ -2,6 +2,7 @@ package com.datatheke.restdriver.beans;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Collection {
 	private String id;
@@ -17,6 +18,14 @@ public class Collection {
 		this.name = name;
 		this.description = description;
 		this.fields = fields;
+	}
+
+	@SuppressWarnings("unchecked")
+	public Collection(Map<String, Object> map) {
+		this.id = (String) map.get("id");
+		this.name = (String) map.get("name");
+		this.description = (String) map.get("description");
+		this.fields = (List<CollectionField>) map.get("fields");
 	}
 
 	public String getId() {

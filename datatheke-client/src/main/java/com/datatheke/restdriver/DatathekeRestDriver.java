@@ -19,6 +19,8 @@ import com.datatheke.restdriver.beans.CollectionField;
 import com.datatheke.restdriver.beans.Item;
 import com.datatheke.restdriver.beans.Library;
 import com.datatheke.restdriver.response.AuthenticateToken;
+import com.datatheke.restdriver.response.CollectionResponse;
+import com.datatheke.restdriver.response.CollectionsResponse;
 import com.datatheke.restdriver.response.EmptyResponse;
 import com.datatheke.restdriver.response.GenericResponse;
 import com.datatheke.restdriver.response.IdResponse;
@@ -169,10 +171,10 @@ public class DatathekeRestDriver {
 	 * @param page
 	 * @return
 	 */
-	public GenericResponse getLibraryCollections(String id, Integer page) {
+	public CollectionsResponse getLibraryCollections(String id, Integer page) {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("page", page != null ? page.toString() : null);
-		return new GenericResponse(query("GET", "library/" + id + "/collections", parameters, null));
+		return new CollectionsResponse(query("GET", "library/" + id + "/collections", parameters, null));
 	}
 
 	/**
@@ -181,7 +183,7 @@ public class DatathekeRestDriver {
 	 * @param id
 	 * @return
 	 */
-	public GenericResponse getLibraryCollections(String id) {
+	public CollectionsResponse getLibraryCollections(String id) {
 		return getLibraryCollections(id, null);
 	}
 
@@ -191,8 +193,8 @@ public class DatathekeRestDriver {
 	 * @param id
 	 * @return
 	 */
-	public GenericResponse getCollection(String id) {
-		return new GenericResponse(query("GET", "collection/" + id, null, null));
+	public CollectionResponse getCollection(String id) {
+		return new CollectionResponse(query("GET", "collection/" + id, null, null));
 	}
 
 	/**
@@ -203,7 +205,7 @@ public class DatathekeRestDriver {
 	 * @param collection
 	 * @return
 	 */
-	public GenericResponse createCollection(String libraryId, Collection collection) {
+	public IdResponse createCollection(String libraryId, Collection collection) {
 		if (collection == null) {
 			throw new IllegalArgumentException("Collection can't be null !!!");
 		}
@@ -218,7 +220,7 @@ public class DatathekeRestDriver {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return new GenericResponse(query("POST", "library/" + libraryId, null, requestBody));
+		return new IdResponse(query("POST", "library/" + libraryId, null, requestBody));
 	}
 
 	/**
@@ -227,7 +229,7 @@ public class DatathekeRestDriver {
 	 * @param collection
 	 * @return
 	 */
-	public GenericResponse updateCollection(Collection collection) {
+	public EmptyResponse updateCollection(Collection collection) {
 		// FIXME not working...
 		if (collection == null || collection.getId() == null || collection.getId().length() == 0) {
 			throw new IllegalArgumentException("Collection can't be null and must have a non-empty id : " + collection);
@@ -248,7 +250,7 @@ public class DatathekeRestDriver {
 			e.printStackTrace();
 		}
 		System.out.println("requestBody: " + requestBody);
-		return new GenericResponse(query("PUT", "collection/" + collection.getId(), null, requestBody));
+		return new EmptyResponse(query("PUT", "collection/" + collection.getId(), null, requestBody));
 	}
 
 	/**
@@ -257,8 +259,8 @@ public class DatathekeRestDriver {
 	 * @param id
 	 * @return
 	 */
-	public GenericResponse deleteCollection(String id) {
-		return new GenericResponse(query("DELETE", "collection/" + id, null, null));
+	public EmptyResponse deleteCollection(String id) {
+		return new EmptyResponse(query("DELETE", "collection/" + id, null, null));
 	}
 
 	/**
@@ -302,7 +304,7 @@ public class DatathekeRestDriver {
 	 * @param item
 	 * @return
 	 */
-	public GenericResponse createItem(String collectionId, Item item) {
+	public IdResponse createItem(String collectionId, Item item) {
 		// TODO
 		return null;
 	}
@@ -313,7 +315,7 @@ public class DatathekeRestDriver {
 	 * @param item
 	 * @return
 	 */
-	public GenericResponse updateItem(Item item) {
+	public EmptyResponse updateItem(Item item) {
 		if (item == null || item.getId() == null || item.getId().length() == 0) {
 			throw new IllegalArgumentException("Item can't be null and must have a non-empty id : " + item);
 		}
@@ -328,7 +330,7 @@ public class DatathekeRestDriver {
 	 * @param id
 	 * @return
 	 */
-	public GenericResponse deleteItem(String collectionId, String id) {
+	public EmptyResponse deleteItem(String collectionId, String id) {
 		// TODO
 		return null;
 	}
