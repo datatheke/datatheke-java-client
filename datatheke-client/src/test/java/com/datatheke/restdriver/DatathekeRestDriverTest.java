@@ -10,7 +10,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.datatheke.restdriver.beans.Library;
-import com.datatheke.restdriver.response.GenericResponse;
+import com.datatheke.restdriver.response.IdResponse;
+import com.datatheke.restdriver.response.LibrariesResponse;
+import com.datatheke.restdriver.response.LibraryResponse;
 
 public class DatathekeRestDriverTest {
 	private static String username;
@@ -47,45 +49,40 @@ public class DatathekeRestDriverTest {
 
 	@Test
 	public void should_not_found_library() {
-		GenericResponse response = null;
-
 		// connect to datatheke
 		DatathekeRestDriver driver = new DatathekeRestDriver();
 		driver.authenticate(username, password);
 		assertThat(driver.isConnected()).isTrue();
 
-		response = driver.getLibrary("unknown lib id");
-		assertThat(response.get("id")).isNull();
+		LibraryResponse response = driver.getLibrary("unknown lib id");
+		assertThat(response.isFound()).isFalse();
 	}
 
 	@Test
 	public void should_create_update_and_delete_library() {
-		GenericResponse response = null;
-
 		// connect to datatheke
 		DatathekeRestDriver driver = new DatathekeRestDriver();
 		driver.authenticate(username, password);
 		assertThat(driver.isConnected()).isTrue();
 
 		// get number of libraries
-		response = driver.getLibraries();
-		Integer nbLibrary = (Integer) response.get("total_item_count");
+		LibrariesResponse librariesResponse = driver.getLibraries();
+		Integer nbLibrary = librariesResponse.getTotalItemCount();
 
 		// create library
 		Library library = new Library(null, "UnitTest library", "This library should be deleted in UnitTest !");
-		response = driver.createLibrary(library);
-		String libraryId = (String) response.get("id");
+		IdResponse idResponse = driver.createLibrary(library);
+		String libraryId = idResponse.getId();
 		assertThat(libraryId).isNotEmpty();
 		library.setId(libraryId);
 
 		// check that library is well created
-		response = driver.getLibrary(library.getId());
-		assertThat(response.get("name")).isEqualTo("UnitTest library");
-		assertThat(response.get("description")).isEqualTo("This library should be deleted in UnitTest !");
+		LibraryResponse libraryResponse = driver.getLibrary(library.getId());
+		assertThat(libraryResponse.getOrNull()).isEqualsToByComparingFields(library);
 
 		// check number of libraries increased
-		response = driver.getLibraries();
-		assertThat((Integer) response.get("total_item_count")).isEqualTo(nbLibrary + 1);
+		librariesResponse = driver.getLibraries();
+		assertThat(librariesResponse.getTotalItemCount()).isEqualTo(nbLibrary + 1);
 
 		// update library
 		library.setName("UnitTest library 2");
@@ -93,16 +90,15 @@ public class DatathekeRestDriverTest {
 		driver.updateLibrary(library);
 
 		// check that library is well updated
-		response = driver.getLibrary(library.getId());
-		assertThat(response.get("name")).isEqualTo("UnitTest library 2");
-		assertThat(response.get("description")).isEqualTo("This library should be deleted in UnitTest ! 2");
+		libraryResponse = driver.getLibrary(library.getId());
+		assertThat(libraryResponse.getOrNull()).isEqualsToByComparingFields(library);
 
 		// delete library
-		response = driver.deleteLibrary(library.getId());
+		driver.deleteLibrary(library.getId());
 
 		// check that number of libraries decreased
-		response = driver.getLibraries();
-		assertThat((Integer) response.get("total_item_count")).isEqualTo(nbLibrary);
+		librariesResponse = driver.getLibraries();
+		assertThat(librariesResponse.getTotalItemCount()).isEqualTo(nbLibrary);
 	}
 
 }

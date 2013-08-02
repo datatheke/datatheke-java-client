@@ -19,11 +19,13 @@ import com.datatheke.restdriver.beans.CollectionField;
 import com.datatheke.restdriver.beans.Item;
 import com.datatheke.restdriver.beans.Library;
 import com.datatheke.restdriver.response.AuthenticateToken;
+import com.datatheke.restdriver.response.EmptyResponse;
 import com.datatheke.restdriver.response.GenericResponse;
+import com.datatheke.restdriver.response.IdResponse;
+import com.datatheke.restdriver.response.LibrariesResponse;
+import com.datatheke.restdriver.response.LibraryResponse;
 import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.WebResource.Builder;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
@@ -78,10 +80,10 @@ public class DatathekeRestDriver {
 	 * @param page
 	 * @return
 	 */
-	public GenericResponse getLibraries(Integer page) {
+	public LibrariesResponse getLibraries(Integer page) {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("page", page != null ? page.toString() : null);
-		return query("GET", "libraries", parameters, null);
+		return new LibrariesResponse(query("GET", "libraries", parameters, null));
 	}
 
 	/**
@@ -89,7 +91,7 @@ public class DatathekeRestDriver {
 	 * 
 	 * @return
 	 */
-	public GenericResponse getLibraries() {
+	public LibrariesResponse getLibraries() {
 		return getLibraries(null);
 	}
 
@@ -99,8 +101,65 @@ public class DatathekeRestDriver {
 	 * @param id
 	 * @return
 	 */
-	public GenericResponse getLibrary(String id) {
-		return query("GET", "library/" + id, null, null);
+	public LibraryResponse getLibrary(String id) {
+		return new LibraryResponse(query("GET", "library/" + id, null, null));
+	}
+
+	/**
+	 * call url POST library<br/>
+	 * get response: {"id":"51fb76d6138a76d45500035f"}
+	 * 
+	 * @param library
+	 * @return id of the created library
+	 */
+	public IdResponse createLibrary(Library library) {
+		if (library == null) {
+			throw new IllegalArgumentException("Library can't be null !!!");
+		}
+		if (library.getId() != null) {
+			throw new IllegalArgumentException("Can't create a Library with an id !!!");
+		}
+		String requestBody = null;
+		try {
+			Map<String, Library> map = new HashMap<String, Library>();
+			map.put("library", library);
+			requestBody = jsonMapper.writeValueAsString(map);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return new IdResponse(query("POST", "library", null, requestBody));
+	}
+
+	/**
+	 * PUT library/{id}
+	 * 
+	 * @param library
+	 * @return
+	 */
+	public EmptyResponse updateLibrary(Library library) {
+		if (library == null || library.getId() == null || library.getId().length() == 0) {
+			throw new IllegalArgumentException("Library can't be null and must have a non-empty id : " + library);
+		}
+		String requestBody = null;
+		try {
+			Map<String, Library> map = new HashMap<String, Library>();
+			map.put("library", new Library(null, library.getName(), library.getDescription()));
+			requestBody = jsonMapper.writeValueAsString(map);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return new EmptyResponse(query("PUT", "library/" + library.getId(), null, requestBody));
+	}
+
+	/**
+	 * DELETE library/{id}
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public EmptyResponse deleteLibrary(String id) {
+		return new EmptyResponse(query("DELETE", "library/" + id, null, null));
 	}
 
 	/**
@@ -113,7 +172,7 @@ public class DatathekeRestDriver {
 	public GenericResponse getLibraryCollections(String id, Integer page) {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("page", page != null ? page.toString() : null);
-		return query("GET", "library/" + id + "/collections", parameters, null);
+		return new GenericResponse(query("GET", "library/" + id + "/collections", parameters, null));
 	}
 
 	/**
@@ -133,66 +192,7 @@ public class DatathekeRestDriver {
 	 * @return
 	 */
 	public GenericResponse getCollection(String id) {
-		return query("GET", "collection/" + id, null, null);
-	}
-
-	/**
-	 * GET collection/{id}/items?page={page}
-	 * 
-	 * @param id
-	 * @param page
-	 * @return
-	 */
-	public GenericResponse getCollectionItems(String id, Integer page) {
-		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("page", page != null ? page.toString() : null);
-		return query("GET", "collection/" + id + "/items", parameters, null);
-	}
-
-	/**
-	 * GET collection/{id}/items
-	 * 
-	 * @param id
-	 * @return
-	 */
-	public GenericResponse getCollectionItems(String id) {
-		return getCollectionItems(id, null);
-	}
-
-	/**
-	 * GET collection/{collectionId}/item/{id}
-	 * 
-	 * @param collectionId
-	 * @param id
-	 * @return
-	 */
-	public GenericResponse getItem(String collectionId, String id) {
-		return query("GET", "collection/" + collectionId + "/item/" + id, null, null);
-	}
-
-	/**
-	 * call url POST library<br/>
-	 * get response: {"id":"51fb76d6138a76d45500035f"}
-	 * 
-	 * @param library
-	 * @return
-	 */
-	public GenericResponse createLibrary(Library library) {
-		if (library == null) {
-			throw new IllegalArgumentException("Library can't be null !!!");
-		}
-		if (library.getId() != null) {
-			throw new IllegalArgumentException("Can't create a Library with an id !!!");
-		}
-		String requestBody = null;
-		try {
-			Map<String, Library> map = new HashMap<String, Library>();
-			map.put("library", library);
-			requestBody = jsonMapper.writeValueAsString(map);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return query("POST", "library", null, requestBody);
+		return new GenericResponse(query("GET", "collection/" + id, null, null));
 	}
 
 	/**
@@ -218,40 +218,7 @@ public class DatathekeRestDriver {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return query("POST", "library/" + libraryId, null, requestBody);
-	}
-
-	/**
-	 * POST collection/{id}
-	 * 
-	 * @param collectionId
-	 * @param item
-	 * @return
-	 */
-	public GenericResponse createItem(String collectionId, Item item) {
-		// TODO
-		return null;
-	}
-
-	/**
-	 * PUT library/{id}
-	 * 
-	 * @param library
-	 * @return
-	 */
-	public GenericResponse updateLibrary(Library library) {
-		if (library == null || library.getId() == null || library.getId().length() == 0) {
-			throw new IllegalArgumentException("Library can't be null and must have a non-empty id : " + library);
-		}
-		String requestBody = null;
-		try {
-			Map<String, Library> map = new HashMap<String, Library>();
-			map.put("library", new Library(null, library.getName(), library.getDescription()));
-			requestBody = jsonMapper.writeValueAsString(map);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return query("PUT", "library/" + library.getId(), null, requestBody);
+		return new GenericResponse(query("POST", "library/" + libraryId, null, requestBody));
 	}
 
 	/**
@@ -281,7 +248,63 @@ public class DatathekeRestDriver {
 			e.printStackTrace();
 		}
 		System.out.println("requestBody: " + requestBody);
-		return query("PUT", "collection/" + collection.getId(), null, requestBody);
+		return new GenericResponse(query("PUT", "collection/" + collection.getId(), null, requestBody));
+	}
+
+	/**
+	 * DELETE collection/{id}
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public GenericResponse deleteCollection(String id) {
+		return new GenericResponse(query("DELETE", "collection/" + id, null, null));
+	}
+
+	/**
+	 * GET collection/{id}/items?page={page}
+	 * 
+	 * @param id
+	 * @param page
+	 * @return
+	 */
+	public GenericResponse getCollectionItems(String id, Integer page) {
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("page", page != null ? page.toString() : null);
+		return new GenericResponse(query("GET", "collection/" + id + "/items", parameters, null));
+	}
+
+	/**
+	 * GET collection/{id}/items
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public GenericResponse getCollectionItems(String id) {
+		return getCollectionItems(id, null);
+	}
+
+	/**
+	 * GET collection/{collectionId}/item/{id}
+	 * 
+	 * @param collectionId
+	 * @param id
+	 * @return
+	 */
+	public GenericResponse getItem(String collectionId, String id) {
+		return new GenericResponse(query("GET", "collection/" + collectionId + "/item/" + id, null, null));
+	}
+
+	/**
+	 * POST collection/{id}
+	 * 
+	 * @param collectionId
+	 * @param item
+	 * @return
+	 */
+	public GenericResponse createItem(String collectionId, Item item) {
+		// TODO
+		return null;
 	}
 
 	/**
@@ -296,26 +319,6 @@ public class DatathekeRestDriver {
 		}
 		// TODO
 		return null;
-	}
-
-	/**
-	 * DELETE library/{id}
-	 * 
-	 * @param id
-	 * @return
-	 */
-	public GenericResponse deleteLibrary(String id) {
-		return query("DELETE", "library/" + id, null, null);
-	}
-
-	/**
-	 * DELETE collection/{id}
-	 * 
-	 * @param id
-	 * @return
-	 */
-	public GenericResponse deleteCollection(String id) {
-		return query("DELETE", "collection/" + id, null, null);
 	}
 
 	/**
@@ -334,7 +337,7 @@ public class DatathekeRestDriver {
 		this.debug = debug;
 	}
 
-	private GenericResponse query(String httpVerb, String path, Map<String, String> parameters, String requestBody) {
+	private ClientResponse query(String httpVerb, String path, Map<String, String> parameters, String requestBody) {
 		if (token != null) {
 			WebResource endpoint = resource.path(path);
 			if (parameters != null) {
@@ -362,20 +365,7 @@ public class DatathekeRestDriver {
 			if (debug) {
 				System.out.println(response);
 			}
-			try {
-				return new GenericResponse(response);
-			} catch (JsonParseException e) {
-				e.printStackTrace();
-			} catch (JsonMappingException e) {
-				e.printStackTrace();
-			} catch (ClientHandlerException e) {
-				e.printStackTrace();
-			} catch (UniformInterfaceException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return new GenericResponse();
+			return response;
 		} else {
 			throw new IllegalStateException("You must be authenticated before perform this action !!!");
 		}

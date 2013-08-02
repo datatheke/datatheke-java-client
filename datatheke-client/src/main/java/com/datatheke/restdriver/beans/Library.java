@@ -1,5 +1,7 @@
 package com.datatheke.restdriver.beans;
 
+import java.util.Map;
+
 public class Library {
 	private String id;
 	private String name;
@@ -12,6 +14,12 @@ public class Library {
 		this.id = id;
 		this.name = name;
 		this.description = description;
+	}
+
+	public Library(Map<String, Object> map) {
+		this.id = (String) map.get("id");
+		this.name = (String) map.get("name");
+		this.description = (String) map.get("description");
 	}
 
 	public String getId() {

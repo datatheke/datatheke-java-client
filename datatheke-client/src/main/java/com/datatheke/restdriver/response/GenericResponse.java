@@ -19,11 +19,7 @@ public class GenericResponse {
 	private ClientResponse response;
 	private Map<String, Object> values;
 
-	public GenericResponse() {
-		values = new HashMap<String, Object>();
-	}
-
-	public GenericResponse(ClientResponse response) throws JsonParseException, JsonMappingException, IOException {
+	public GenericResponse(ClientResponse response) {
 		this.response = response;
 		try {
 			if (response != null && response.hasEntity()) {
@@ -34,6 +30,12 @@ public class GenericResponse {
 			}
 		} catch (UniformInterfaceException e) {
 			// TODO how to avoid exception ?
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		if (this.values == null) {
 			this.values = new HashMap<String, Object>();
@@ -42,6 +44,10 @@ public class GenericResponse {
 
 	public ClientResponse getResponse() {
 		return response;
+	}
+
+	public Map<String, Object> getValues() {
+		return values;
 	}
 
 	public Object get(String key) {
