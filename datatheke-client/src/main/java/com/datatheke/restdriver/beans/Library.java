@@ -7,6 +7,11 @@ public class Library {
 	private String name;
 	private String description;
 
+	// Boolean private
+	// Boolean collaborative
+	// Date created_at
+	// Date updated_at
+
 	public Library() {
 	}
 

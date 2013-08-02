@@ -10,6 +10,12 @@ public class Collection {
 	private String description;
 	private List<CollectionField> fields;
 
+	// Boolean private
+	// Boolean deleted
+	// Date created_at
+	// Date updated_at
+	// List<?> readers
+
 	public Collection() {
 	}
 
@@ -20,12 +26,18 @@ public class Collection {
 		this.fields = fields;
 	}
 
-	@SuppressWarnings("unchecked")
 	public Collection(Map<String, Object> map) {
 		this.id = (String) map.get("id");
 		this.name = (String) map.get("name");
 		this.description = (String) map.get("description");
-		this.fields = (List<CollectionField>) map.get("fields");
+		this.fields = new ArrayList<CollectionField>();
+		@SuppressWarnings("unchecked")
+		List<Map<String, Object>> fieldList = (List<Map<String, Object>>) map.get("fields");
+		if (fieldList != null) {
+			for (Map<String, Object> field : fieldList) {
+				this.fields.add(new CollectionField(field));
+			}
+		}
 	}
 
 	public String getId() {

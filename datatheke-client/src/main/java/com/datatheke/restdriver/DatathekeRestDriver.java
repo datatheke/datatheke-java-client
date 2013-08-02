@@ -22,8 +22,9 @@ import com.datatheke.restdriver.response.AuthenticateToken;
 import com.datatheke.restdriver.response.CollectionResponse;
 import com.datatheke.restdriver.response.CollectionsResponse;
 import com.datatheke.restdriver.response.EmptyResponse;
-import com.datatheke.restdriver.response.GenericResponse;
 import com.datatheke.restdriver.response.IdResponse;
+import com.datatheke.restdriver.response.ItemResponse;
+import com.datatheke.restdriver.response.ItemsResponse;
 import com.datatheke.restdriver.response.LibrariesResponse;
 import com.datatheke.restdriver.response.LibraryResponse;
 import com.sun.jersey.api.client.Client;
@@ -183,7 +184,7 @@ public class DatathekeRestDriver {
 	 * @param id
 	 * @return
 	 */
-	public CollectionsResponse getLibraryCollections(String id) {
+	public CollectionsResponse getCollectionsForLibrary(String id) {
 		return getLibraryCollections(id, null);
 	}
 
@@ -241,7 +242,7 @@ public class DatathekeRestDriver {
 			if (collection.getFields() != null) {
 				fields = new ArrayList<CollectionField>();
 				for (CollectionField field : collection.getFields()) {
-					fields.add(new CollectionField(field.getLabel(), null));
+					fields.add(new CollectionField(null, field.getLabel(), field.getType()));
 				}
 			}
 			map.put("collection", new Collection(null, collection.getName(), collection.getDescription(), fields));
@@ -270,10 +271,10 @@ public class DatathekeRestDriver {
 	 * @param page
 	 * @return
 	 */
-	public GenericResponse getCollectionItems(String id, Integer page) {
+	public ItemsResponse getItemsForCollection(Collection collection, Integer page) {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("page", page != null ? page.toString() : null);
-		return new GenericResponse(query("GET", "collection/" + id + "/items", parameters, null));
+		return new ItemsResponse(query("GET", "collection/" + collection.getId() + "/items", parameters, null), collection.getFields());
 	}
 
 	/**
@@ -282,8 +283,8 @@ public class DatathekeRestDriver {
 	 * @param id
 	 * @return
 	 */
-	public GenericResponse getCollectionItems(String id) {
-		return getCollectionItems(id, null);
+	public ItemsResponse getItemsForCollection(Collection collection) {
+		return getItemsForCollection(collection, null);
 	}
 
 	/**
@@ -293,8 +294,8 @@ public class DatathekeRestDriver {
 	 * @param id
 	 * @return
 	 */
-	public GenericResponse getItem(String collectionId, String id) {
-		return new GenericResponse(query("GET", "collection/" + collectionId + "/item/" + id, null, null));
+	public ItemResponse getItem(Collection collection, String id) {
+		return new ItemResponse(query("GET", "collection/" + collection.getId() + "/item/" + id, null, null), collection.getFields());
 	}
 
 	/**
