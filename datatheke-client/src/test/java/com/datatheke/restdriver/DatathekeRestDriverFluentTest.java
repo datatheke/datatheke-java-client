@@ -137,8 +137,9 @@ public class DatathekeRestDriverFluentTest {
 		collection.setDescription(DESCRIPTION + " 2");
 		collection.addField(new Field(null, "text", FieldType.string));
 		collection.removeField(collection.getField("value"));
-		// TODO perform update => doesn't work actually
-		// EmptyResponse emptyResponse = driver.updateCollection(collection);
+		driver.updateCollection(collection);
+
+		assertThat(driver.getCollection(collectionId).getOrNull()).isNotNull().isEqualsToByComparingFields(collection);
 
 		driver.deleteCollection(collectionId);
 

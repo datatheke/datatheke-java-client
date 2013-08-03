@@ -146,16 +146,17 @@ public class DatathekeRestDriverTest {
 
 		CollectionResponse collectionResponse = driver.getCollection(collectionId);
 		Collection collection = collectionResponse.getOrNull();
+		assertThat(collection).isNotNull();
 
 		collectionsResponse = driver.getCollectionsForLibrary(libraryId);
 		assertThat(collectionsResponse.getTotalItemCount()).isEqualTo(1);
 
 		collection.setName(NAME + " 2");
 		collection.setDescription(DESCRIPTION + " 2");
-		collection.addField(new Field(null, "text", FieldType.string));
-		collection.removeField(collection.getField("value"));
-		// TODO perform update => doesn't work actually
-		// EmptyResponse emptyResponse = driver.updateCollection(collection);
+		driver.updateCollection(collection);
+
+		collectionResponse = driver.getCollection(collectionId);
+		assertThat(collectionResponse.getOrNull()).isNotNull().isEqualsToByComparingFields(collection);
 
 		driver.deleteCollection(collectionId);
 
@@ -163,6 +164,16 @@ public class DatathekeRestDriverTest {
 		assertThat(collectionsResponse.getTotalItemCount()).isEqualTo(0);
 
 		driver.deleteLibrary(libraryId);
+	}
+
+	@Test
+	public void should_add_field_to_a_collection() {
+		// TODO
+	}
+
+	@Test
+	public void should_remove_field_to_a_collection() {
+		// TODO
 	}
 
 	@Test

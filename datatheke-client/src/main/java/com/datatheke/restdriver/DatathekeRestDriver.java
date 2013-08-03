@@ -269,7 +269,6 @@ public class DatathekeRestDriver {
 		} catch (IOException e) {
 			LOGGER.info("{}", e);
 		}
-		LOGGER.info("requestBody: {}", requestBody);
 		return new EmptyResponse(query("PUT", "collection/" + collection.getId(), null, requestBody));
 	}
 
