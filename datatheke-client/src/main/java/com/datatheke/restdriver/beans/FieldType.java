@@ -2,6 +2,8 @@ package com.datatheke.restdriver.beans;
 
 import java.util.Date;
 
+import com.datatheke.restdriver.beans.type.LatLon;
+
 public enum FieldType {
 	string, textarea, date, coordinates;
 
@@ -18,10 +20,25 @@ public enum FieldType {
 
 	public static FieldType get(Class<?> clazz) {
 		if (clazz != null) {
-			if (clazz.equals(String.class)) {
+			if (String.class.equals(clazz)) {
 				return string;
-			} else if (clazz.equals(Date.class)) {
+			} else if (Date.class.equals(clazz)) {
 				return date;
+			} else if (LatLon.class.equals(clazz)) {
+				return coordinates;
+			}
+		}
+		return null;
+	}
+
+	public static Class<?> get(FieldType type) {
+		if (type != null) {
+			if (string.equals(type)) {
+				return String.class;
+			} else if (date.equals(type)) {
+				return Date.class;
+			} else if (coordinates.equals(type)) {
+				return LatLon.class;
 			}
 		}
 		return null;
