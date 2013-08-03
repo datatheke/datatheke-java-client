@@ -1,4 +1,4 @@
-package com.datatheke.restdriver.beans.type;
+package com.datatheke.restdriver.bean.type;
 
 public class LatLon {
 	private Double longitude;

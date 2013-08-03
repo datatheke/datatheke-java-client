@@ -11,10 +11,10 @@ import java.util.Properties;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.datatheke.restdriver.beans.Collection;
-import com.datatheke.restdriver.beans.Field;
-import com.datatheke.restdriver.beans.FieldType;
-import com.datatheke.restdriver.beans.Library;
+import com.datatheke.restdriver.bean.Collection;
+import com.datatheke.restdriver.bean.Field;
+import com.datatheke.restdriver.bean.FieldType;
+import com.datatheke.restdriver.bean.Library;
 import com.datatheke.restdriver.response.IdResponse;
 
 public class DatathekeRestDriverFluentTest {

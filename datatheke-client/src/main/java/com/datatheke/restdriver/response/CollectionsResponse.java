@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.datatheke.restdriver.beans.Collection;
+import com.datatheke.restdriver.bean.Collection;
 import com.sun.jersey.api.client.ClientResponse;
 
 public class CollectionsResponse extends ListResponse<Collection> {

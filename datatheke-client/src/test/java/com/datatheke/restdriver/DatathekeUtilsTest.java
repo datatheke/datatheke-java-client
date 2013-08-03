@@ -6,10 +6,10 @@ import java.util.Date;
 
 import org.junit.Test;
 
-import com.datatheke.restdriver.beans.Collection;
-import com.datatheke.restdriver.beans.FieldType;
-import com.datatheke.restdriver.beans.Item;
-import com.datatheke.restdriver.beans.type.LatLon;
+import com.datatheke.restdriver.bean.Collection;
+import com.datatheke.restdriver.bean.FieldType;
+import com.datatheke.restdriver.bean.Item;
+import com.datatheke.restdriver.bean.type.LatLon;
 
 public class DatathekeUtilsTest {
 

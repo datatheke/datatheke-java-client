@@ -1,6 +1,6 @@
 package com.datatheke.restdriver.response;
 
-import com.datatheke.restdriver.beans.Collection;
+import com.datatheke.restdriver.bean.Collection;
 import com.sun.jersey.api.client.ClientResponse;
 
 public class CollectionResponse extends BeanResponse<Collection> {

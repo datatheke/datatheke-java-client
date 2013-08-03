@@ -1,8 +1,8 @@
-package com.datatheke.restdriver.beans;
+package com.datatheke.restdriver.bean;
 
 import java.util.Date;
 
-import com.datatheke.restdriver.beans.type.LatLon;
+import com.datatheke.restdriver.bean.type.LatLon;
 
 public enum FieldType {
 	string, textarea, date, coordinates;

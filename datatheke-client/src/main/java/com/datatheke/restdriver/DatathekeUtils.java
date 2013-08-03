@@ -10,11 +10,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.datatheke.restdriver.beans.Collection;
-import com.datatheke.restdriver.beans.Field;
-import com.datatheke.restdriver.beans.FieldType;
-import com.datatheke.restdriver.beans.Item;
-import com.datatheke.restdriver.beans.utils.Pair;
+import com.datatheke.restdriver.bean.Collection;
+import com.datatheke.restdriver.bean.Field;
+import com.datatheke.restdriver.bean.FieldType;
+import com.datatheke.restdriver.bean.Item;
+import com.datatheke.restdriver.bean.util.Pair;
 import com.datatheke.restdriver.response.IdResponse;
 
 public class DatathekeUtils {

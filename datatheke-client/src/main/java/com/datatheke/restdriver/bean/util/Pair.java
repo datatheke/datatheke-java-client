@@ -1,4 +1,4 @@
-package com.datatheke.restdriver.beans.utils;
+package com.datatheke.restdriver.bean.util;
 
 public class Pair<T, U> {
 	private T key;

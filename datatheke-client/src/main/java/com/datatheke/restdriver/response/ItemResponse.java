@@ -2,8 +2,8 @@ package com.datatheke.restdriver.response;
 
 import java.util.List;
 
-import com.datatheke.restdriver.beans.Field;
-import com.datatheke.restdriver.beans.Item;
+import com.datatheke.restdriver.bean.Field;
+import com.datatheke.restdriver.bean.Item;
 import com.sun.jersey.api.client.ClientResponse;
 
 public class ItemResponse extends BeanResponse<Item> {

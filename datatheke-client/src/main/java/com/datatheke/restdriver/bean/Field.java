@@ -1,4 +1,4 @@
-package com.datatheke.restdriver.beans;
+package com.datatheke.restdriver.bean;
 
 import java.util.Map;
 

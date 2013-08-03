@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.datatheke.restdriver.beans.Field;
-import com.datatheke.restdriver.beans.Item;
+import com.datatheke.restdriver.bean.Field;
+import com.datatheke.restdriver.bean.Item;
 import com.sun.jersey.api.client.ClientResponse;
 
 public class ItemsResponse extends ListResponse<Item> {
