@@ -38,12 +38,13 @@ import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 public class DatathekeRestDriver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatathekeRestDriver.class);
 	private static final ObjectMapper jsonMapper = new ObjectMapper().setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
+	public static final String DEFAULT_URI = "http://www.datatheke.com/api/v1";
 	private final WebResource resource;
 	private AuthenticateToken token;
 	private boolean debug;
 
 	public DatathekeRestDriver() {
-		resource = Client.create().resource("http://www.datatheke.com/api/v1");
+		resource = Client.create().resource(DEFAULT_URI);
 		debug = false;
 	}
 
@@ -52,10 +53,23 @@ public class DatathekeRestDriver {
 		debug = false;
 	}
 
+	/**
+	 * Test if the driver is connected and logged to the datatheke API
+	 * 
+	 * @return
+	 */
 	public Boolean isConnected() {
 		return token != null;
 	}
 
+	/**
+	 * Login to the datatheke API with the provided username and password. Check
+	 * if it works with isConnected() method
+	 * 
+	 * @param username
+	 * @param password
+	 * @return
+	 */
 	public DatathekeRestDriver authenticate(String username, String password) {
 		resource.addFilter(new HTTPBasicAuthFilter(username, password));
 		WebResource endpoint = resource.path("token");
@@ -70,18 +84,19 @@ public class DatathekeRestDriver {
 				ObjectMapper mapper = new ObjectMapper();
 				token = mapper.readValue(entity, AuthenticateToken.class);
 			} catch (JsonParseException e) {
-				e.printStackTrace();
+				LOGGER.info("{}", e);
 			} catch (JsonMappingException e) {
-				e.printStackTrace();
+				LOGGER.info("{}", e);
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOGGER.info("{}", e);
 			}
 		}
 		return this;
 	}
 
 	/**
-	 * GET librairies?page={page}
+	 * Get a specific page in the list of your librairies. A page is 20
+	 * elements.
 	 * 
 	 * @param page
 	 * @return
@@ -93,7 +108,7 @@ public class DatathekeRestDriver {
 	}
 
 	/**
-	 * GET librairies
+	 * Get the first page of your librairies (20 elements max)
 	 * 
 	 * @return
 	 */
@@ -102,7 +117,7 @@ public class DatathekeRestDriver {
 	}
 
 	/**
-	 * GET library/{id}
+	 * Get a libraray with it id
 	 * 
 	 * @param libraryId
 	 * @return
@@ -112,8 +127,7 @@ public class DatathekeRestDriver {
 	}
 
 	/**
-	 * call url POST library<br/>
-	 * get response: {"id":"51fb76d6138a76d45500035f"}
+	 * Create a new library. Library object must have a null id !
 	 * 
 	 * @param library
 	 * @return id of the created library
@@ -131,14 +145,14 @@ public class DatathekeRestDriver {
 			map.put("library", library);
 			requestBody = jsonMapper.writeValueAsString(map);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.info("{}", e);
 		}
 
 		return new IdResponse(query("POST", "library", null, requestBody));
 	}
 
 	/**
-	 * PUT library/{id}
+	 * Update a library. Library object must have it id field filled.
 	 * 
 	 * @param library
 	 * @return
@@ -153,13 +167,13 @@ public class DatathekeRestDriver {
 			map.put("library", new Library(null, library.getName(), library.getDescription()));
 			requestBody = jsonMapper.writeValueAsString(map);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.info("{}", e);
 		}
 		return new EmptyResponse(query("PUT", "library/" + library.getId(), null, requestBody));
 	}
 
 	/**
-	 * DELETE library/{id}
+	 * Delete a library and all its content.
 	 * 
 	 * @param libraryId
 	 * @return
@@ -169,7 +183,8 @@ public class DatathekeRestDriver {
 	}
 
 	/**
-	 * GET library/{id}/collections?page={page}
+	 * Get a specific page of collections in the specified library. A page is 20
+	 * elements.
 	 * 
 	 * @param libraryId
 	 * @param page
@@ -182,7 +197,8 @@ public class DatathekeRestDriver {
 	}
 
 	/**
-	 * GET library/{id}/collections
+	 * Get the first page of collections in the specified library (20 elements
+	 * max)
 	 * 
 	 * @param libraryId
 	 * @return
@@ -192,7 +208,7 @@ public class DatathekeRestDriver {
 	}
 
 	/**
-	 * GET collection/{id}
+	 * Get a collection with it id
 	 * 
 	 * @param collectionId
 	 * @return
@@ -202,8 +218,8 @@ public class DatathekeRestDriver {
 	}
 
 	/**
-	 * POST library/{id}<br/>
-	 * get response: {"id":"51fb7aa5138a76255b000165"}
+	 * Create a new collection in the specified library. Collection object must
+	 * have a null id !
 	 * 
 	 * @param libraryId
 	 * @param collection
@@ -222,13 +238,13 @@ public class DatathekeRestDriver {
 			map.put("collection", collection);
 			requestBody = jsonMapper.writeValueAsString(map);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.info("{}", e);
 		}
 		return new IdResponse(query("POST", "library/" + libraryId, null, requestBody));
 	}
 
 	/**
-	 * PUT collection/{id}
+	 * Update a collection. Collection object must have it id field filled.
 	 * 
 	 * @param collection
 	 * @return
@@ -251,14 +267,14 @@ public class DatathekeRestDriver {
 			map.put("collection", new Collection(null, collection.getName(), collection.getDescription(), fields));
 			requestBody = jsonMapper.writeValueAsString(map);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.info("{}", e);
 		}
 		LOGGER.info("requestBody: {}", requestBody);
 		return new EmptyResponse(query("PUT", "collection/" + collection.getId(), null, requestBody));
 	}
 
 	/**
-	 * DELETE collection/{id}
+	 * Delete a collection and all its content.
 	 * 
 	 * @param collectionId
 	 * @return
@@ -268,9 +284,10 @@ public class DatathekeRestDriver {
 	}
 
 	/**
-	 * GET collection/{id}/items?page={page}
+	 * Get a specific page of items in the specified collection. A page is 20
+	 * elements.
 	 * 
-	 * @param id
+	 * @param collection
 	 * @param page
 	 * @return
 	 */
@@ -281,9 +298,9 @@ public class DatathekeRestDriver {
 	}
 
 	/**
-	 * GET collection/{id}/items
+	 * Get the first page of items in the specified collection (20 elements max)
 	 * 
-	 * @param id
+	 * @param collection
 	 * @return
 	 */
 	public ItemsResponse getItemsForCollection(Collection collection) {
@@ -291,7 +308,7 @@ public class DatathekeRestDriver {
 	}
 
 	/**
-	 * GET collection/{collectionId}/item/{id}
+	 * Get an item with it collection and it id
 	 * 
 	 * @param collectionId
 	 * @param itemId
@@ -302,7 +319,8 @@ public class DatathekeRestDriver {
 	}
 
 	/**
-	 * POST collection/{id}
+	 * Create a new item in the specified collection. Item object must have a
+	 * null id !
 	 * 
 	 * @param collectionId
 	 * @param item
@@ -326,13 +344,13 @@ public class DatathekeRestDriver {
 			map.put("_" + collectionId, fieldMap);
 			requestBody = jsonMapper.writeValueAsString(map);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.info("{}", e);
 		}
 		return new IdResponse(query("POST", "collection/" + collectionId, null, requestBody));
 	}
 
 	/**
-	 * PUT collection/{collectionId}/item/{id}
+	 * Update an item. Item object must have it id field filled.
 	 * 
 	 * @param item
 	 * @return
@@ -352,14 +370,14 @@ public class DatathekeRestDriver {
 			map.put("_" + collectionId, fieldMap);
 			requestBody = jsonMapper.writeValueAsString(map);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.info("{}", e);
 		}
 		LOGGER.info("{}", requestBody);
 		return new EmptyResponse(query("PUT", "collection/" + collectionId + "/item/" + item.getId(), null, requestBody));
 	}
 
 	/**
-	 * DELETE collection/{collectionId}/item/{id}
+	 * Delete an item.
 	 * 
 	 * @param collectionId
 	 * @param itemId
@@ -370,6 +388,11 @@ public class DatathekeRestDriver {
 		return new EmptyResponse(query("DELETE", "collection/" + collectionId + "/item/" + itemId, null, null));
 	}
 
+	/**
+	 * Set debug mode to true to see in logs all calls made to the datatheke API
+	 * 
+	 * @param debug
+	 */
 	public void setDebug(boolean debug) {
 		this.debug = debug;
 	}
