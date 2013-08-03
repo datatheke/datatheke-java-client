@@ -13,6 +13,8 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.datatheke.restdriver.beans.Collection;
 import com.datatheke.restdriver.beans.Field;
@@ -34,6 +36,7 @@ import com.sun.jersey.api.client.WebResource.Builder;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
 public class DatathekeRestDriver {
+	private static final Logger LOGGER = LoggerFactory.getLogger(DatathekeRestDriver.class);
 	private static final ObjectMapper jsonMapper = new ObjectMapper().setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
 	private final WebResource resource;
 	private AuthenticateToken token;
@@ -59,7 +62,7 @@ public class DatathekeRestDriver {
 		Builder builder = endpoint.accept(MediaType.APPLICATION_JSON_TYPE);
 		ClientResponse response = builder.post(ClientResponse.class);
 		if (debug) {
-			System.out.println(response);
+			LOGGER.info("{}", response);
 		}
 		String entity = response.getEntity(String.class);
 		if (response.getStatus() == 200) {
@@ -250,7 +253,7 @@ public class DatathekeRestDriver {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("requestBody: " + requestBody);
+		LOGGER.info("requestBody: {}", requestBody);
 		return new EmptyResponse(query("PUT", "collection/" + collection.getId(), null, requestBody));
 	}
 
@@ -351,7 +354,7 @@ public class DatathekeRestDriver {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println(requestBody);
+		LOGGER.info("{}", requestBody);
 		return new EmptyResponse(query("PUT", "collection/" + collectionId + "/item/" + item.getId(), null, requestBody));
 	}
 
@@ -397,7 +400,7 @@ public class DatathekeRestDriver {
 				throw new IllegalArgumentException("Unknown httpVerb <" + httpVerb + "> !!!");
 			}
 			if (debug) {
-				System.out.println(response);
+				LOGGER.info("{}", response);
 			}
 			return response;
 		} else {

@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.datatheke.restdriver.beans.Collection;
 import com.datatheke.restdriver.beans.Field;
 import com.datatheke.restdriver.beans.FieldType;
@@ -15,6 +18,8 @@ import com.datatheke.restdriver.beans.utils.Pair;
 import com.datatheke.restdriver.response.IdResponse;
 
 public class DatathekeUtils {
+	private static final Logger LOGGER = LoggerFactory.getLogger(DatathekeUtils.class);
+
 	public static Collection generateCollectionFor(Class<?> clazz) {
 		if (clazz != null) {
 			return new Collection(null, clazz.getSimpleName(), null, generateValidFields(clazz));
@@ -74,7 +79,7 @@ public class DatathekeUtils {
 					}
 				}
 			} catch (InstantiationException e) {
-				System.out.println(clazz + " must have an empty constructor !");
+				LOGGER.info("{} must have an empty constructor !", clazz);
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
@@ -182,7 +187,7 @@ public class DatathekeUtils {
 					if (fieldType != null) {
 						getters.add(method);
 					} else {
-						System.out.println("Unable to generate field for class: " + method.getReturnType());
+						LOGGER.info("Unable to generate field for class: {}", method.getReturnType());
 					}
 				}
 			}

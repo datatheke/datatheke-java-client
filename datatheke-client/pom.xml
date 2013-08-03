@@ -20,6 +20,9 @@
 			</plugin>
 		</plugins>
 	</build>
+	<properties>
+		<slf4jVersion>1.7.5</slf4jVersion>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
@@ -30,6 +33,22 @@
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>1.9.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4jVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4jVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
+			<scope>runtime</scope>
 		</dependency>
 		<!-- Tests -->
 		<dependency>
