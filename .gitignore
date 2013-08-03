@@ -2,6 +2,10 @@
 # private configuration
 auth.properties
 
+# test files
+Main.java
+Person.java
+
 # Java class files
 *.class
 

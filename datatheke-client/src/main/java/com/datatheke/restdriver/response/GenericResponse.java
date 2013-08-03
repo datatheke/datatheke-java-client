@@ -42,6 +42,14 @@ public class GenericResponse {
 		}
 	}
 
+	public Integer getStatus() {
+		return response.getStatus();
+	}
+
+	public boolean isStatusOk() {
+		return response.getStatus() >= 200 && response.getStatus() < 300;
+	}
+
 	public ClientResponse getResponse() {
 		return response;
 	}

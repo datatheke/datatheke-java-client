@@ -104,11 +104,11 @@ public class DatathekeRestDriver {
 	/**
 	 * GET library/{id}
 	 * 
-	 * @param id
+	 * @param libraryId
 	 * @return
 	 */
-	public LibraryResponse getLibrary(String id) {
-		return new LibraryResponse(query("GET", "library/" + id, null, null));
+	public LibraryResponse getLibrary(String libraryId) {
+		return new LibraryResponse(query("GET", "library/" + libraryId, null, null));
 	}
 
 	/**
@@ -161,44 +161,44 @@ public class DatathekeRestDriver {
 	/**
 	 * DELETE library/{id}
 	 * 
-	 * @param id
+	 * @param libraryId
 	 * @return
 	 */
-	public EmptyResponse deleteLibrary(String id) {
-		return new EmptyResponse(query("DELETE", "library/" + id, null, null));
+	public EmptyResponse deleteLibrary(String libraryId) {
+		return new EmptyResponse(query("DELETE", "library/" + libraryId, null, null));
 	}
 
 	/**
 	 * GET library/{id}/collections?page={page}
 	 * 
-	 * @param id
+	 * @param libraryId
 	 * @param page
 	 * @return
 	 */
-	public CollectionsResponse getCollectionsForLibrary(String id, Integer page) {
+	public CollectionsResponse getCollectionsForLibrary(String libraryId, Integer page) {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("page", page != null ? page.toString() : null);
-		return new CollectionsResponse(query("GET", "library/" + id + "/collections", parameters, null));
+		return new CollectionsResponse(query("GET", "library/" + libraryId + "/collections", parameters, null));
 	}
 
 	/**
 	 * GET library/{id}/collections
 	 * 
-	 * @param id
+	 * @param libraryId
 	 * @return
 	 */
-	public CollectionsResponse getCollectionsForLibrary(String id) {
-		return getCollectionsForLibrary(id, null);
+	public CollectionsResponse getCollectionsForLibrary(String libraryId) {
+		return getCollectionsForLibrary(libraryId, null);
 	}
 
 	/**
 	 * GET collection/{id}
 	 * 
-	 * @param id
+	 * @param collectionId
 	 * @return
 	 */
-	public CollectionResponse getCollection(String id) {
-		return new CollectionResponse(query("GET", "collection/" + id, null, null));
+	public CollectionResponse getCollection(String collectionId) {
+		return new CollectionResponse(query("GET", "collection/" + collectionId, null, null));
 	}
 
 	/**
@@ -260,11 +260,11 @@ public class DatathekeRestDriver {
 	/**
 	 * DELETE collection/{id}
 	 * 
-	 * @param id
+	 * @param collectionId
 	 * @return
 	 */
-	public EmptyResponse deleteCollection(String id) {
-		return new EmptyResponse(query("DELETE", "collection/" + id, null, null));
+	public EmptyResponse deleteCollection(String collectionId) {
+		return new EmptyResponse(query("DELETE", "collection/" + collectionId, null, null));
 	}
 
 	/**
@@ -294,11 +294,11 @@ public class DatathekeRestDriver {
 	 * GET collection/{collectionId}/item/{id}
 	 * 
 	 * @param collectionId
-	 * @param id
+	 * @param itemId
 	 * @return
 	 */
-	public ItemResponse getItem(Collection collection, String id) {
-		return new ItemResponse(query("GET", "collection/" + collection.getId() + "/item/" + id, null, null), collection.getFields());
+	public ItemResponse getItem(Collection collection, String itemId) {
+		return new ItemResponse(query("GET", "collection/" + collection.getId() + "/item/" + itemId, null, null), collection.getFields());
 	}
 
 	/**
@@ -362,12 +362,12 @@ public class DatathekeRestDriver {
 	 * DELETE collection/{collectionId}/item/{id}
 	 * 
 	 * @param collectionId
-	 * @param id
+	 * @param itemId
 	 * @return
 	 */
-	public EmptyResponse deleteItem(String collectionId, String id) {
+	public EmptyResponse deleteItem(String collectionId, String itemId) {
 		// FIXME get an internal serveur error (500) !
-		return new EmptyResponse(query("DELETE", "collection/" + collectionId + "/item/" + id, null, null));
+		return new EmptyResponse(query("DELETE", "collection/" + collectionId + "/item/" + itemId, null, null));
 	}
 
 	public void setDebug(boolean debug) {
