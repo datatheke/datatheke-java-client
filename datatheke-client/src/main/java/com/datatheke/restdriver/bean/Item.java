@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.datatheke.restdriver.bean.util.Pair;
+
 public class Item {
 	private String id;
 	private Map<Field, Object> values;
@@ -43,7 +45,7 @@ public class Item {
 	public Field getField(String label) {
 		if (values != null) {
 			for (Entry<Field, Object> entry : values.entrySet()) {
-				if (entry.getKey().getLabel().equals(label)) {
+				if (entry != null && entry.getKey() != null && entry.getKey().getLabel() != null && entry.getKey().getLabel().equals(label)) {
 					return entry.getKey();
 				}
 			}
@@ -51,15 +53,12 @@ public class Item {
 		return null;
 	}
 
-	public Object getFieldValue(String label) {
-		if (values != null) {
-			for (Entry<Field, Object> entry : values.entrySet()) {
-				if (entry.getKey().getLabel().equals(label)) {
-					return entry.getValue();
-				}
-			}
+	public Pair<Field, Object> getFieldData(String label) {
+		Field field = getField(label);
+		if (values != null && field != null) {
+			return new Pair<Field, Object>(field, values.get(field));
 		}
-		return null;
+		return new Pair<Field, Object>();
 	}
 
 	public Object getFieldValue(Field field) {
@@ -69,10 +68,18 @@ public class Item {
 		return null;
 	}
 
+	public Object getFieldValue(String label) {
+		return getFieldValue(getField(label));
+	}
+
 	public void setFieldValue(Field field, Object value) {
 		if (values != null) {
 			values.put(field, value);
 		}
+	}
+
+	public void setFieldValue(String label, Object value) {
+		setFieldValue(getField(label), value);
 	}
 
 	public void addField(Field field, Object value) {
@@ -80,6 +87,17 @@ public class Item {
 			values = new HashMap<Field, Object>();
 		}
 		values.put(field, value);
+	}
+
+	public void removeField(Field field) {
+		if (values == null) {
+			values = new HashMap<Field, Object>();
+		}
+		values.remove(field);
+	}
+
+	public void removeField(String label) {
+		removeField(getField(label));
 	}
 
 	@Override

@@ -19,10 +19,14 @@ public class ItemsResponse extends ListResponse<Item> {
 	@Override
 	public List<Item> getItems() {
 		List<Item> collections = new ArrayList<Item>();
-		@SuppressWarnings("unchecked")
-		Map<String, Map<String, Object>> items = (Map<String, Map<String, Object>>) get("items");
-		for (Map<String, Object> item : items.values()) {
-			collections.add(new Item(fields, item));
+		try {
+			@SuppressWarnings("unchecked")
+			Map<String, Map<String, Object>> items = (Map<String, Map<String, Object>>) get("items");
+			for (Map<String, Object> item : items.values()) {
+				collections.add(new Item(fields, item));
+			}
+		} catch (ClassCastException e) {
+			// nothing
 		}
 		return collections;
 	}

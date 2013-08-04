@@ -5,20 +5,27 @@ import static org.fest.assertions.api.Assertions.assertThat;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.datatheke.restdriver.bean.Collection;
 import com.datatheke.restdriver.bean.Field;
 import com.datatheke.restdriver.bean.FieldType;
+import com.datatheke.restdriver.bean.Item;
 import com.datatheke.restdriver.bean.Library;
 import com.datatheke.restdriver.response.CollectionResponse;
 import com.datatheke.restdriver.response.CollectionsResponse;
+import com.datatheke.restdriver.response.EmptyResponse;
 import com.datatheke.restdriver.response.IdResponse;
 import com.datatheke.restdriver.response.ItemResponse;
+import com.datatheke.restdriver.response.ItemsResponse;
 import com.datatheke.restdriver.response.LibrariesResponse;
 import com.datatheke.restdriver.response.LibraryResponse;
 
@@ -28,6 +35,7 @@ public class DatathekeRestDriverTest {
 	private static final String DESCRIPTION = "Default description for UnitTest. This should be deleted at the end of test !!!";
 	private static String username;
 	private static String password;
+	private String createdLibraryId;
 
 	@BeforeClass
 	public static void loadProperties() {
@@ -42,6 +50,20 @@ public class DatathekeRestDriverTest {
 			password = (String) prop.get("auth.password");
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+
+	@Before
+	public void clear() {
+		createdLibraryId = null;
+	}
+
+	@After
+	public void delete() {
+		if (createdLibraryId != null) {
+			DatathekeRestDriver driver = new DatathekeRestDriver();
+			driver.authenticate(username, password);
+			driver.deleteLibrary(createdLibraryId);
 		}
 	}
 
@@ -83,9 +105,9 @@ public class DatathekeRestDriverTest {
 		// create library
 		Library library = new Library(null, NAME, DESCRIPTION);
 		IdResponse idResponse = driver.createLibrary(library);
-		String libraryId = idResponse.getId();
-		assertThat(libraryId).isNotEmpty();
-		library.setId(libraryId);
+		createdLibraryId = idResponse.getId();
+		assertThat(createdLibraryId).isNotEmpty();
+		library.setId(createdLibraryId);
 
 		// check that library is well created
 		LibraryResponse libraryResponse = driver.getLibrary(library.getId());
@@ -106,6 +128,7 @@ public class DatathekeRestDriverTest {
 
 		// delete library
 		driver.deleteLibrary(library.getId());
+		createdLibraryId = null;
 
 		// check that number of libraries decreased
 		librariesResponse = driver.getLibraries();
@@ -131,16 +154,16 @@ public class DatathekeRestDriverTest {
 		assertThat(driver.isConnected()).isTrue();
 
 		IdResponse createLibrary = driver.createLibrary(new Library(null, NAME, DESCRIPTION));
-		String libraryId = createLibrary.getId();
-		assertThat(libraryId).isNotEmpty();
+		createdLibraryId = createLibrary.getId();
+		assertThat(createdLibraryId).isNotEmpty();
 
-		CollectionsResponse collectionsResponse = driver.getCollectionsForLibrary(libraryId);
+		CollectionsResponse collectionsResponse = driver.getCollectionsForLibrary(createdLibraryId);
 		assertThat(collectionsResponse.getTotalItemCount()).isEqualTo(0);
 
 		List<Field> fields = new ArrayList<Field>();
 		fields.add(new Field(null, "key", FieldType.string));
 		fields.add(new Field(null, "value", FieldType.string));
-		IdResponse createCollection = driver.createCollection(libraryId, new Collection(null, NAME, DESCRIPTION, fields));
+		IdResponse createCollection = driver.createCollection(createdLibraryId, new Collection(null, NAME, DESCRIPTION, fields));
 		String collectionId = createCollection.getId();
 		assertThat(collectionId).isNotEmpty();
 
@@ -148,22 +171,24 @@ public class DatathekeRestDriverTest {
 		Collection collection = collectionResponse.getOrNull();
 		assertThat(collection).isNotNull();
 
-		collectionsResponse = driver.getCollectionsForLibrary(libraryId);
+		collectionsResponse = driver.getCollectionsForLibrary(createdLibraryId);
 		assertThat(collectionsResponse.getTotalItemCount()).isEqualTo(1);
 
 		collection.setName(NAME + " 2");
 		collection.setDescription(DESCRIPTION + " 2");
-		driver.updateCollection(collection);
+		EmptyResponse updateCollection = driver.updateCollection(collection);
+		assertThat(updateCollection.isStatusOk()).isTrue();
 
 		collectionResponse = driver.getCollection(collectionId);
 		assertThat(collectionResponse.getOrNull()).isNotNull().isEqualsToByComparingFields(collection);
 
 		driver.deleteCollection(collectionId);
 
-		collectionsResponse = driver.getCollectionsForLibrary(libraryId);
+		collectionsResponse = driver.getCollectionsForLibrary(createdLibraryId);
 		assertThat(collectionsResponse.getTotalItemCount()).isEqualTo(0);
 
-		driver.deleteLibrary(libraryId);
+		driver.deleteLibrary(createdLibraryId);
+		createdLibraryId = null;
 	}
 
 	@Test
@@ -184,13 +209,13 @@ public class DatathekeRestDriverTest {
 		assertThat(driver.isConnected()).isTrue();
 
 		IdResponse createLibrary = driver.createLibrary(new Library(null, NAME, DESCRIPTION));
-		String libraryId = createLibrary.getId();
-		assertThat(libraryId).isNotEmpty();
+		createdLibraryId = createLibrary.getId();
+		assertThat(createdLibraryId).isNotEmpty();
 
 		List<Field> fields = new ArrayList<Field>();
 		fields.add(new Field(null, "key", FieldType.string));
 		fields.add(new Field(null, "value", FieldType.string));
-		IdResponse createCollection = driver.createCollection(libraryId, new Collection(null, NAME, DESCRIPTION, fields));
+		IdResponse createCollection = driver.createCollection(createdLibraryId, new Collection(null, NAME, DESCRIPTION, fields));
 		String collectionId = createCollection.getId();
 		assertThat(collectionId).isNotEmpty();
 
@@ -200,12 +225,63 @@ public class DatathekeRestDriverTest {
 		ItemResponse itemResponse = driver.getItem(collection, UNKNOWN_ID);
 		assertThat(itemResponse.isFound()).isFalse();
 
-		driver.deleteLibrary(libraryId);
+		driver.deleteLibrary(createdLibraryId);
+		createdLibraryId = null;
 	}
 
 	@Test
 	public void should_create_update_and_delete_item() {
-		// TODO can't delete item actually...
+		// connect to datatheke
+		DatathekeRestDriver driver = new DatathekeRestDriver();
+		driver.authenticate(username, password);
+		assertThat(driver.isConnected()).isTrue();
+
+		IdResponse createLibrary = driver.createLibrary(new Library(null, NAME, DESCRIPTION));
+		createdLibraryId = createLibrary.getId();
+		assertThat(createdLibraryId).isNotEmpty();
+
+		List<Field> fields = new ArrayList<Field>();
+		fields.add(new Field(null, "key", FieldType.string));
+		fields.add(new Field(null, "value", FieldType.string));
+		IdResponse createCollection = driver.createCollection(createdLibraryId, new Collection(null, NAME, DESCRIPTION, fields));
+		String collectionId = createCollection.getId();
+		assertThat(collectionId).isNotEmpty();
+
+		CollectionResponse collectionResponse = driver.getCollection(collectionId);
+		Collection collection = collectionResponse.getOrNull();
+
+		Map<Field, Object> values = new HashMap<Field, Object>();
+		values.put(collection.getField("key"), "key");
+		values.put(collection.getField("value"), "value");
+		Item item = new Item(null, values);
+		IdResponse createItem = driver.createItem(collection.getId(), item);
+		assertThat(createItem.isStatusOk()).isTrue();
+		String itemId = createItem.getId();
+		assertThat(itemId).isNotNull();
+		item.setId(itemId);
+
+		ItemsResponse itemsResponse = driver.getItemsForCollection(collection);
+		assertThat(itemsResponse.isStatusOk()).isTrue();
+		assertThat(itemsResponse.getItems()).isNotEmpty().hasSize(1).contains(item);
+
+		item.setFieldValue("key", "key 2");
+		item.setFieldValue("value", "value 2");
+		EmptyResponse updateItem = driver.updateItem(collection.getId(), item);
+		assertThat(updateItem.isStatusOk()).isTrue();
+
+		ItemResponse itemResponse = driver.getItem(collection, itemId);
+		assertThat(itemResponse.isStatusOk()).isTrue();
+		assertThat(itemResponse.getOrNull()).isEqualsToByComparingFields(item);
+
+		EmptyResponse deleteItem = driver.deleteItem(collection.getId(), itemId);
+		assertThat(deleteItem.isStatusOk()).isTrue();
+
+		itemsResponse = driver.getItemsForCollection(collection);
+		assertThat(itemsResponse.isStatusOk()).isTrue();
+		assertThat(itemsResponse.getItems()).isEmpty();
+
+		driver.deleteLibrary(createdLibraryId);
+		createdLibraryId = null;
 	}
 
 	@Test

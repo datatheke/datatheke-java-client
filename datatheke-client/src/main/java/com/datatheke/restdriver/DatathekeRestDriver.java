@@ -371,7 +371,6 @@ public class DatathekeRestDriver {
 		} catch (IOException e) {
 			LOGGER.info("{}", e);
 		}
-		LOGGER.info("{}", requestBody);
 		return new EmptyResponse(query("PUT", "collection/" + collectionId + "/item/" + item.getId(), null, requestBody));
 	}
 
@@ -383,7 +382,6 @@ public class DatathekeRestDriver {
 	 * @return
 	 */
 	public EmptyResponse deleteItem(String collectionId, String itemId) {
-		// FIXME get an internal serveur error (500) !
 		return new EmptyResponse(query("DELETE", "collection/" + collectionId + "/item/" + itemId, null, null));
 	}
 
