@@ -250,7 +250,6 @@ public class DatathekeRestDriver {
 	 * @return
 	 */
 	public EmptyResponse updateCollection(Collection collection) {
-		// FIXME not working...
 		if (collection == null || collection.getId() == null || collection.getId().length() == 0) {
 			throw new IllegalArgumentException("Collection can't be null and must have a non-empty id : " + collection);
 		}
