@@ -261,7 +261,7 @@ public class DatathekeRestDriver {
 			if (collection.getFields() != null) {
 				fields = new ArrayList<Field>();
 				for (Field field : collection.getFields()) {
-					fields.add(new Field(null, field.getLabel(), field.getType()));
+					fields.add(new Field(null, field.getLabel(), null));
 				}
 			}
 			map.put("collection", new Collection(null, collection.getName(), collection.getDescription(), fields));
