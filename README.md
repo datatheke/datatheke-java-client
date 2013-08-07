@@ -34,8 +34,5 @@ if (collectionResponse.isStatusOk()) {
 	item.addField(collection.getField("key"), "key"); // item fields must have their datatheke id
 	item.addField(collection.getField("value"), "value");
 	IdResponse createItem = driver.createItem(collectionId, item);
-	if (createItem.isStatusOk()) {
-		return createItem.getId();
-	}
 }
 ```
