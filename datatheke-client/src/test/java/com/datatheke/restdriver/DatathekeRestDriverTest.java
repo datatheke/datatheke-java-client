@@ -61,7 +61,7 @@ public class DatathekeRestDriverTest {
 	@After
 	public void delete() {
 		if (createdLibraryId != null) {
-			DatathekeRestDriver driver = new DatathekeRestDriver();
+			DatathekeClient driver = new DatathekeClient();
 			driver.authenticate(username, password);
 			driver.deleteLibrary(createdLibraryId);
 		}
@@ -75,7 +75,7 @@ public class DatathekeRestDriverTest {
 
 	@Test
 	public void should_login_to_datatheke() {
-		DatathekeRestDriver driver = new DatathekeRestDriver();
+		DatathekeClient driver = new DatathekeClient();
 		driver.authenticate(username, password);
 		assertThat(driver.isConnected()).isTrue();
 	}
@@ -83,7 +83,7 @@ public class DatathekeRestDriverTest {
 	@Test
 	public void should_not_find_library() {
 		// connect to datatheke
-		DatathekeRestDriver driver = new DatathekeRestDriver();
+		DatathekeClient driver = new DatathekeClient();
 		driver.authenticate(username, password);
 		assertThat(driver.isConnected()).isTrue();
 
@@ -94,7 +94,7 @@ public class DatathekeRestDriverTest {
 	@Test
 	public void should_create_update_and_delete_library() {
 		// connect to datatheke
-		DatathekeRestDriver driver = new DatathekeRestDriver();
+		DatathekeClient driver = new DatathekeClient();
 		driver.authenticate(username, password);
 		assertThat(driver.isConnected()).isTrue();
 
@@ -138,7 +138,7 @@ public class DatathekeRestDriverTest {
 	@Test
 	public void should_not_find_collection() {
 		// connect to datatheke
-		DatathekeRestDriver driver = new DatathekeRestDriver();
+		DatathekeClient driver = new DatathekeClient();
 		driver.authenticate(username, password);
 		assertThat(driver.isConnected()).isTrue();
 
@@ -149,7 +149,7 @@ public class DatathekeRestDriverTest {
 	@Test
 	public void should_create_update_and_delete_collection() {
 		// connect to datatheke
-		DatathekeRestDriver driver = new DatathekeRestDriver();
+		DatathekeClient driver = new DatathekeClient();
 		driver.authenticate(username, password);
 		assertThat(driver.isConnected()).isTrue();
 
@@ -204,7 +204,7 @@ public class DatathekeRestDriverTest {
 	@Test
 	public void should_not_find_item() {
 		// connect to datatheke
-		DatathekeRestDriver driver = new DatathekeRestDriver();
+		DatathekeClient driver = new DatathekeClient();
 		driver.authenticate(username, password);
 		assertThat(driver.isConnected()).isTrue();
 
@@ -232,7 +232,7 @@ public class DatathekeRestDriverTest {
 	@Test
 	public void should_create_update_and_delete_item() {
 		// connect to datatheke
-		DatathekeRestDriver driver = new DatathekeRestDriver();
+		DatathekeClient driver = new DatathekeClient();
 		driver.authenticate(username, password);
 		assertThat(driver.isConnected()).isTrue();
 

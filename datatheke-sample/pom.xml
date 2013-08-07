@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.datatheke</groupId>
-		<artifactId>rest-client</artifactId>
+		<artifactId>rest-api</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>rest-samples</artifactId>
@@ -26,7 +26,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.datatheke</groupId>
-			<artifactId>rest-driver</artifactId>
+			<artifactId>rest-client</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>

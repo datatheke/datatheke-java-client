@@ -7,7 +7,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.datatheke.restdriver.DatathekeRestDriver;
+import com.datatheke.restdriver.DatathekeClient;
 import com.datatheke.restdriver.DatathekeUtils;
 import com.datatheke.restdriver.bean.Collection;
 import com.datatheke.restdriver.bean.Item;
@@ -24,7 +24,7 @@ public class SimpleOperationsWithUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SimpleOperationsWithUtils.class);
 
 	public static void main(String[] args) {
-		DatathekeRestDriver driver = getLoggedToApi();
+		DatathekeClient driver = getLoggedToApi();
 		String libraryId = createALibrary(driver);
 		LOGGER.info("Create library with id {}", libraryId);
 		String collectionId = createACollection(driver, libraryId);
@@ -38,7 +38,7 @@ public class SimpleOperationsWithUtils {
 		LOGGER.info("All created objects are removed !");
 	}
 
-	public static DatathekeRestDriver getLoggedToApi() {
+	public static DatathekeClient getLoggedToApi() {
 		try {
 			Properties prop = new Properties();
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -47,7 +47,7 @@ public class SimpleOperationsWithUtils {
 			String username = (String) prop.get("auth.username");
 			String password = (String) prop.get("auth.password");
 
-			DatathekeRestDriver driver = new DatathekeRestDriver();
+			DatathekeClient driver = new DatathekeClient();
 			driver.setDebug(true);
 			return driver.authenticate(username, password);
 		} catch (IOException e) {
@@ -61,7 +61,7 @@ public class SimpleOperationsWithUtils {
 		}
 	}
 
-	public static String createALibrary(DatathekeRestDriver driver) {
+	public static String createALibrary(DatathekeClient driver) {
 		IdResponse createLibrary = driver.createLibrary(new Library(null, "My first library", "A sample test library"));
 		if (createLibrary.isStatusOk()) {
 			return createLibrary.getId();
@@ -69,7 +69,7 @@ public class SimpleOperationsWithUtils {
 		return null;
 	}
 
-	public static String createACollection(DatathekeRestDriver driver, String libraryId) {
+	public static String createACollection(DatathekeClient driver, String libraryId) {
 		// this method inspect MyObject class and create a collection with all
 		// needed fields. Now you just have to create it to datatheke
 		Collection generatedCollection = DatathekeUtils.generateCollectionFor(MyObject.class);
@@ -80,13 +80,13 @@ public class SimpleOperationsWithUtils {
 		return null;
 	}
 
-	public static String createACollection2(DatathekeRestDriver driver, String libraryId) {
+	public static String createACollection2(DatathekeClient driver, String libraryId) {
 		// this method generate the collection for MyObject class and create it
 		// directly to datatheke
 		return DatathekeUtils.createCollection(driver, libraryId, MyObject.class);
 	}
 
-	public static String createAnItem(DatathekeRestDriver driver, String collectionId) {
+	public static String createAnItem(DatathekeClient driver, String collectionId) {
 		// to create an item you must have it related collection with it fields
 		// containing id
 		CollectionResponse collectionResponse = driver.getCollection(collectionId);
@@ -103,7 +103,7 @@ public class SimpleOperationsWithUtils {
 		return null;
 	}
 
-	public static String createAnItem2(DatathekeRestDriver driver, String collectionId) {
+	public static String createAnItem2(DatathekeClient driver, String collectionId) {
 		// this method does exactly the same as createAnItem and return the
 		// collection (retrieved from datatheke api) and the id for the created
 		// item

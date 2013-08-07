@@ -11,19 +11,19 @@ import com.datatheke.restdriver.response.ItemsResponse;
 import com.datatheke.restdriver.response.LibrariesResponse;
 import com.datatheke.restdriver.response.LibraryResponse;
 
-public class DatathekeRestDriverFluent {
-	private DatathekeRestDriver driver;
+public class DatathekeClientFluent {
+	private DatathekeClient driver;
 	private GenericResponse lastResponse;
 
-	public DatathekeRestDriverFluent() {
-		driver = new DatathekeRestDriver();
+	public DatathekeClientFluent() {
+		driver = new DatathekeClient();
 	}
 
-	public DatathekeRestDriverFluent(String baseUri) {
-		driver = new DatathekeRestDriver(baseUri);
+	public DatathekeClientFluent(String baseUri) {
+		driver = new DatathekeClient(baseUri);
 	}
 
-	public DatathekeRestDriverFluent(DatathekeRestDriver driver) {
+	public DatathekeClientFluent(DatathekeClient driver) {
 		this.driver = driver;
 	}
 
@@ -44,7 +44,7 @@ public class DatathekeRestDriverFluent {
 	 * @param password
 	 * @return
 	 */
-	public DatathekeRestDriverFluent authenticate(String username, String password) {
+	public DatathekeClientFluent authenticate(String username, String password) {
 		driver.authenticate(username, password);
 		return this;
 	}
@@ -88,7 +88,7 @@ public class DatathekeRestDriverFluent {
 	 * @param library
 	 * @return id of the created library
 	 */
-	public DatathekeRestDriverFluent createLibrary(Library library) {
+	public DatathekeClientFluent createLibrary(Library library) {
 		lastResponse = driver.createLibrary(library);
 		return this;
 	}
@@ -99,7 +99,7 @@ public class DatathekeRestDriverFluent {
 	 * @param library
 	 * @return
 	 */
-	public DatathekeRestDriverFluent updateLibrary(Library library) {
+	public DatathekeClientFluent updateLibrary(Library library) {
 		lastResponse = driver.updateLibrary(library);
 		return this;
 	}
@@ -110,7 +110,7 @@ public class DatathekeRestDriverFluent {
 	 * @param libraryId
 	 * @return
 	 */
-	public DatathekeRestDriverFluent deleteLibrary(String libraryId) {
+	public DatathekeClientFluent deleteLibrary(String libraryId) {
 		lastResponse = driver.deleteLibrary(libraryId);
 		return this;
 	}
@@ -159,7 +159,7 @@ public class DatathekeRestDriverFluent {
 	 * @param collection
 	 * @return
 	 */
-	public DatathekeRestDriverFluent createCollection(String libraryId, Collection collection) {
+	public DatathekeClientFluent createCollection(String libraryId, Collection collection) {
 		lastResponse = driver.createCollection(libraryId, collection);
 		return this;
 	}
@@ -170,7 +170,7 @@ public class DatathekeRestDriverFluent {
 	 * @param collection
 	 * @return
 	 */
-	public DatathekeRestDriverFluent updateCollection(Collection collection) {
+	public DatathekeClientFluent updateCollection(Collection collection) {
 		lastResponse = driver.updateCollection(collection);
 		return this;
 	}
@@ -181,7 +181,7 @@ public class DatathekeRestDriverFluent {
 	 * @param collectionId
 	 * @return
 	 */
-	public DatathekeRestDriverFluent deleteCollection(String collectionId) {
+	public DatathekeClientFluent deleteCollection(String collectionId) {
 		lastResponse = driver.deleteCollection(collectionId);
 		return this;
 	}
@@ -230,7 +230,7 @@ public class DatathekeRestDriverFluent {
 	 * @param item
 	 * @return
 	 */
-	public DatathekeRestDriverFluent createItem(String collectionId, Item item) {
+	public DatathekeClientFluent createItem(String collectionId, Item item) {
 		lastResponse = driver.createItem(collectionId, item);
 		return this;
 	}
@@ -241,7 +241,7 @@ public class DatathekeRestDriverFluent {
 	 * @param item
 	 * @return
 	 */
-	public DatathekeRestDriverFluent updateItem(String collectionId, Item item) {
+	public DatathekeClientFluent updateItem(String collectionId, Item item) {
 		lastResponse = driver.updateItem(collectionId, item);
 		return this;
 	}
@@ -253,7 +253,7 @@ public class DatathekeRestDriverFluent {
 	 * @param itemId
 	 * @return
 	 */
-	public DatathekeRestDriverFluent deleteItem(String collectionId, String itemId) {
+	public DatathekeClientFluent deleteItem(String collectionId, String itemId) {
 		lastResponse = driver.deleteItem(collectionId, itemId);
 		return this;
 	}
@@ -263,7 +263,7 @@ public class DatathekeRestDriverFluent {
 	 * 
 	 * @return
 	 */
-	public DatathekeRestDriver getDriver() {
+	public DatathekeClient getDriver() {
 		return driver;
 	}
 

@@ -11,7 +11,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.datatheke.restdriver.DatathekeRestDriver;
+import com.datatheke.restdriver.DatathekeClient;
 import com.datatheke.restdriver.bean.Collection;
 import com.datatheke.restdriver.bean.Field;
 import com.datatheke.restdriver.bean.FieldType;
@@ -28,7 +28,7 @@ public class SimpleOperations {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SimpleOperations.class);
 
 	public static void main(String[] args) {
-		DatathekeRestDriver driver = getLoggedToApi();
+		DatathekeClient driver = getLoggedToApi();
 		String libraryId = createALibrary(driver);
 		LOGGER.info("Create library with id {}", libraryId);
 		String collectionId = createACollection(driver, libraryId);
@@ -42,7 +42,7 @@ public class SimpleOperations {
 		LOGGER.info("All created objects are removed !");
 	}
 
-	public static DatathekeRestDriver getLoggedToApi() {
+	public static DatathekeClient getLoggedToApi() {
 		try {
 			Properties prop = new Properties();
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -51,7 +51,7 @@ public class SimpleOperations {
 			String username = (String) prop.get("auth.username");
 			String password = (String) prop.get("auth.password");
 
-			DatathekeRestDriver driver = new DatathekeRestDriver();
+			DatathekeClient driver = new DatathekeClient();
 			driver.setDebug(true);
 			return driver.authenticate(username, password);
 		} catch (IOException e) {
@@ -65,7 +65,7 @@ public class SimpleOperations {
 		}
 	}
 
-	public static String createALibrary(DatathekeRestDriver driver) {
+	public static String createALibrary(DatathekeClient driver) {
 		IdResponse createLibrary = driver.createLibrary(new Library(null, "My first library", "A sample test library"));
 		if (createLibrary.isStatusOk()) {
 			return createLibrary.getId();
@@ -73,7 +73,7 @@ public class SimpleOperations {
 		return null;
 	}
 
-	public static String createACollection(DatathekeRestDriver driver, String libraryId) {
+	public static String createACollection(DatathekeClient driver, String libraryId) {
 		// define fields for elements that you will store in that collection
 		List<Field> fields = new ArrayList<Field>();
 		fields.add(new Field(null, "key", FieldType.string));
@@ -86,7 +86,7 @@ public class SimpleOperations {
 		return null;
 	}
 
-	public static String createAnItem(DatathekeRestDriver driver, String collectionId) {
+	public static String createAnItem(DatathekeClient driver, String collectionId) {
 		// to create an item you must have it related collection with it fields
 		// containing id
 		CollectionResponse collectionResponse = driver.getCollection(collectionId);

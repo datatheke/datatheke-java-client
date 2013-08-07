@@ -158,7 +158,7 @@ public class DatathekeUtils {
 	 * @param obj
 	 * @return Id of the created collection
 	 */
-	public static String createCollection(DatathekeRestDriver driver, String libraryId, Class<?> clazz) {
+	public static String createCollection(DatathekeClient driver, String libraryId, Class<?> clazz) {
 		if (driver != null && libraryId != null && clazz != null) {
 			Collection collection = DatathekeUtils.generateCollectionFor(clazz);
 			collection.setDescription("Automatically generated collection");
@@ -178,7 +178,7 @@ public class DatathekeUtils {
 	 * @param obj
 	 * @return
 	 */
-	public static String createCollection(DatathekeRestDriver driver, String libraryId, Object obj) {
+	public static String createCollection(DatathekeClient driver, String libraryId, Object obj) {
 		if (obj != null) {
 			return createCollection(driver, libraryId, obj.getClass());
 		}
@@ -195,7 +195,7 @@ public class DatathekeUtils {
 	 * @param obj
 	 * @return the collection retrieved form datatheke and the inserted item id
 	 */
-	public static Pair<Collection, String> createItem(DatathekeRestDriver driver, String collectionId, Object obj) {
+	public static Pair<Collection, String> createItem(DatathekeClient driver, String collectionId, Object obj) {
 		if (driver != null && collectionId != null && obj != null) {
 			Collection collection = driver.getCollection(collectionId).getOrNull();
 			if (collection != null) {
@@ -216,7 +216,7 @@ public class DatathekeUtils {
 	 * @param obj
 	 * @return the created item id
 	 */
-	public static String createItem(DatathekeRestDriver driver, Collection collection, Object obj) {
+	public static String createItem(DatathekeClient driver, Collection collection, Object obj) {
 		if (driver != null && collection != null && obj != null) {
 			Item item = DatathekeUtils.toItem(collection.getFields(), obj);
 			IdResponse createItem = driver.createItem(collection.getId(), item);
@@ -235,7 +235,7 @@ public class DatathekeUtils {
 	 * @return the collection retrieved form datatheke and the list of inserted
 	 *         item id
 	 */
-	public static Pair<Collection, List<String>> createItems(DatathekeRestDriver driver, String collectionId, List<? extends Object> objs) {
+	public static Pair<Collection, List<String>> createItems(DatathekeClient driver, String collectionId, List<? extends Object> objs) {
 		if (driver != null && collectionId != null && objs != null) {
 			Collection collection = driver.getCollection(collectionId).getOrNull();
 			if (collection != null) {
@@ -260,7 +260,7 @@ public class DatathekeUtils {
 	 * @param objs
 	 * @return
 	 */
-	public static Pair<Collection, List<String>> createItems(DatathekeRestDriver driver, String collectionId, Object... objs) {
+	public static Pair<Collection, List<String>> createItems(DatathekeClient driver, String collectionId, Object... objs) {
 		return createItems(driver, collectionId, Arrays.asList(objs));
 	}
 
@@ -273,7 +273,7 @@ public class DatathekeUtils {
 	 * @param obj
 	 * @return the collection created and the id of created item
 	 */
-	public static Pair<Collection, String> createCollectionAndItem(DatathekeRestDriver driver, String libraryId, Object obj) {
+	public static Pair<Collection, String> createCollectionAndItem(DatathekeClient driver, String libraryId, Object obj) {
 		String collectionId = createCollection(driver, libraryId, obj);
 		return createItem(driver, collectionId, obj);
 	}
@@ -288,7 +288,7 @@ public class DatathekeUtils {
 	 * @param objs
 	 * @return
 	 */
-	public static Pair<Collection, List<String>> createCollectionAndItems(DatathekeRestDriver driver, String libraryId, List<Object> objs) {
+	public static Pair<Collection, List<String>> createCollectionAndItems(DatathekeClient driver, String libraryId, List<Object> objs) {
 		// TODO not working yet...
 		// String collectionId = createCollection(driver, libraryId,
 		// objs.get(0).getClass());
@@ -306,7 +306,7 @@ public class DatathekeUtils {
 	 * @param objs
 	 * @return
 	 */
-	public static Pair<Collection, List<String>> createCollectionAndItems(DatathekeRestDriver driver, String libraryId, Object... objs) {
+	public static Pair<Collection, List<String>> createCollectionAndItems(DatathekeClient driver, String libraryId, Object... objs) {
 		return createCollectionAndItems(driver, libraryId, objs);
 	}
 

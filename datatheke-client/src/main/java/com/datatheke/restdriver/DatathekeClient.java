@@ -35,20 +35,20 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.WebResource.Builder;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
-public class DatathekeRestDriver {
-	private static final Logger LOGGER = LoggerFactory.getLogger(DatathekeRestDriver.class);
+public class DatathekeClient {
+	private static final Logger LOGGER = LoggerFactory.getLogger(DatathekeClient.class);
 	private static final ObjectMapper jsonMapper = new ObjectMapper().setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
 	public static final String DEFAULT_URI = "http://www.datatheke.com/api/v1";
 	private final WebResource resource;
 	private AuthenticateToken token;
 	private boolean debug;
 
-	public DatathekeRestDriver() {
+	public DatathekeClient() {
 		resource = Client.create().resource(DEFAULT_URI);
 		debug = false;
 	}
 
-	public DatathekeRestDriver(String baseUri) {
+	public DatathekeClient(String baseUri) {
 		resource = Client.create().resource(baseUri);
 		debug = false;
 	}
@@ -70,7 +70,7 @@ public class DatathekeRestDriver {
 	 * @param password
 	 * @return
 	 */
-	public DatathekeRestDriver authenticate(String username, String password) {
+	public DatathekeClient authenticate(String username, String password) {
 		resource.addFilter(new HTTPBasicAuthFilter(username, password));
 		WebResource endpoint = resource.path("token");
 		Builder builder = endpoint.accept(MediaType.APPLICATION_JSON_TYPE);
