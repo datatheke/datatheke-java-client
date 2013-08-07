@@ -15,6 +15,12 @@ public class Library {
 	public Library() {
 	}
 
+	public Library(String name, String description) {
+		this.id = null;
+		this.name = name;
+		this.description = description;
+	}
+
 	public Library(String id, String name, String description) {
 		this.id = id;
 		this.name = name;

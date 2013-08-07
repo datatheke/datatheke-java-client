@@ -11,6 +11,11 @@ public class Item {
 	private String id;
 	private Map<Field, Object> values;
 
+	public Item() {
+		this.id = null;
+		this.values = null;
+	}
+
 	public Item(String id, Map<Field, Object> values) {
 		this.id = id;
 		this.values = values;

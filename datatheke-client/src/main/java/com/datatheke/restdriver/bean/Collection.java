@@ -19,6 +19,13 @@ public class Collection {
 	public Collection() {
 	}
 
+	public Collection(String name, String description) {
+		this.id = null;
+		this.name = name;
+		this.description = description;
+		this.fields = new ArrayList<Field>();
+	}
+
 	public Collection(String id, String name, String description, List<Field> fields) {
 		this.id = id;
 		this.name = name;

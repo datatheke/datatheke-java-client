@@ -12,6 +12,12 @@ public class Field {
 	public Field() {
 	}
 
+	public Field(String label, FieldType type) {
+		this.id = null;
+		this.label = label;
+		this.type = type;
+	}
+
 	public Field(String id, String label, FieldType type) {
 		this.id = id;
 		this.label = label;

@@ -2,10 +2,6 @@ package com.datatheke.restsample;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -66,7 +62,8 @@ public class SimpleOperations {
 	}
 
 	public static String createALibrary(DatathekeClient driver) {
-		IdResponse createLibrary = driver.createLibrary(new Library(null, "My first library", "A sample test library"));
+		Library library = new Library("My first library", "A sample test library with this really short description.");
+		IdResponse createLibrary = driver.createLibrary(library);
 		if (createLibrary.isStatusOk()) {
 			return createLibrary.getId();
 		}
@@ -75,10 +72,9 @@ public class SimpleOperations {
 
 	public static String createACollection(DatathekeClient driver, String libraryId) {
 		// define fields for elements that you will store in that collection
-		List<Field> fields = new ArrayList<Field>();
-		fields.add(new Field(null, "key", FieldType.string));
-		fields.add(new Field(null, "value", FieldType.string));
-		Collection collection = new Collection(null, "My first collection", "A sample test collection", fields);
+		Collection collection = new Collection("My first collection", "A sample test collection");
+		collection.addField(new Field("key", FieldType.string));
+		collection.addField(new Field("value", FieldType.string));
 		IdResponse createCollection = driver.createCollection(libraryId, collection);
 		if (createCollection.isStatusOk()) {
 			return createCollection.getId();
@@ -93,10 +89,9 @@ public class SimpleOperations {
 		if (collectionResponse.isStatusOk()) {
 			Collection collection = collectionResponse.getOrNull();
 			// set item fields : they must match with collection fields
-			Map<Field, Object> values = new HashMap<Field, Object>();
-			values.put(collection.getField("key"), "key");
-			values.put(collection.getField("value"), "value");
-			Item item = new Item(null, values);
+			Item item = new Item();
+			item.addField(collection.getField("key"), "key");
+			item.addField(collection.getField("value"), "value");
 			IdResponse createItem = driver.createItem(collectionId, item);
 			if (createItem.isStatusOk()) {
 				return createItem.getId();
